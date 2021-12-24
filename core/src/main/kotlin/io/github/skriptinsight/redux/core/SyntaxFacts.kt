@@ -5,6 +5,9 @@ import org.intellij.lang.annotations.Language
 object SyntaxFacts {
 
     @Language("Regexp")
+    val choiceSplitterPattern = Regex("\\|(?![^(]*\\))")
+
+    @Language("Regexp")
     const val linePattern = ("^((?:[^#]|##)*)(\\s*#(?!#).*)$")
 
     @Language("Regexp")
