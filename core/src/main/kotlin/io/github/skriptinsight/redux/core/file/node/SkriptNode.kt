@@ -64,7 +64,8 @@ data class SkriptNode(val lineNumber: Int, val rawContent: String, val indentati
 
             //Compute range for content and comment
             val trimmedCharsAmount = originalContent.length - content.length
-            contentRange = groupRange(linePatternMatcher, 1, rawIndentCount, offsetEnd = rawIndentCount - trimmedCharsAmount)
+            contentRange =
+                groupRange(linePatternMatcher, 1, rawIndentCount, offsetEnd = rawIndentCount - trimmedCharsAmount)
             commentRange = groupRange(linePatternMatcher, 2, rawIndentCount)
         } else {
             //No comment. Default to un-indented raw content and no comment

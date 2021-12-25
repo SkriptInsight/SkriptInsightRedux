@@ -22,6 +22,7 @@ class SkriptFile(val url: URI, val nodes: ConcurrentMap<Int, SkriptNode>) {
     init {
         computeNodeDataParents(this)
     }
+
     private val extraData = mutableMapOf<String, Any?>()
 
     @Suppress("UNCHECKED_CAST")

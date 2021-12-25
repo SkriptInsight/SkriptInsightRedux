@@ -22,7 +22,7 @@ data class Range(val start: Position, val end: Position) {
      * @return true if [other] [Position] is inside this [Range], false otherwise
      */
     fun contains(other: Position): Boolean {
-        return other >= start  && other <= end
+        return other >= start && other <= end
     }
 }
 
