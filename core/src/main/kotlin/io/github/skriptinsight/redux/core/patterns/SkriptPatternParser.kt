@@ -64,6 +64,7 @@ object SkriptPatternParser {
             isGroupMatch = isGroupMatch or parseGroup('<', '>') {
                 RegexPatternElement(runCatching { Pattern.compile(it) }.getOrNull(), it)
             }
+
             isGroupMatch = isGroupMatch or parseGroup('%', '%') {
                 val flagValues = TypePatternElement.Flags.values()
                 val flagChars = it.takeWhile { c -> flagValues.any { fc -> fc.character == c } }

@@ -23,12 +23,7 @@ class SkriptFile(val url: URI, val nodes: ConcurrentMap<Int, SkriptNode>) {
         computeNodeDataParents(this)
     }
 
-    private val extraData = mutableMapOf<String, Any?>()
-
-    @Suppress("UNCHECKED_CAST")
-    operator fun <T> get(name: String): T? {
-        return extraData[name] as? T?
-    }
+    private val extraData = mutableMapOf<String, Any>()
 
     @Suppress("UNCHECKED_CAST")
     operator fun <T> get(property: KProperty<T>): T? {
@@ -39,8 +34,17 @@ class SkriptFile(val url: URI, val nodes: ConcurrentMap<Int, SkriptNode>) {
         set(property.name, value)
     }
 
+    @Suppress("UNCHECKED_CAST")
+    operator fun <T> get(name: String): T? {
+        return extraData[name] as? T?
+    }
+
     operator fun set(name: String, value: Any?) {
-        extraData[name] = value
+        if (value == null) {
+            extraData.remove(name)
+        } else {
+            extraData[name] = value
+        }
     }
 
     companion object {
