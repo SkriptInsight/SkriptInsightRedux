@@ -12,6 +12,11 @@ class TypePatternElement(val types: List<String>, val flags: EnumSet<Flags>) : S
         ALLOW_CONDITIONAL_EXPRESSIONS('='),
     }
 
+    fun hasFlag(flag: Flags): Boolean {
+        return flags.contains(flag)
+    }
+
+
     override fun toString(): String {
         return "$flagsAsString%${types.joinToString("/")}%"
     }
