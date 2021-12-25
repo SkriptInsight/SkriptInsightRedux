@@ -1,4 +1,5 @@
 plugins {
+    `java-library`
     kotlin("jvm") version "1.6.10" apply false
 }
 
@@ -14,5 +15,9 @@ subprojects {
 
     dependencies {
         "implementation"(kotlin("stdlib"))
+    }
+
+    rootProject.dependencies {
+        "implementation"(this@subprojects)
     }
 }
