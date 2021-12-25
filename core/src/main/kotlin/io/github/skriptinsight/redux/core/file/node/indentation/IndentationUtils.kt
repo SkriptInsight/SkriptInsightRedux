@@ -1,6 +1,7 @@
 package io.github.skriptinsight.redux.core.file.node.indentation
 
 import io.github.skriptinsight.redux.core.file.SkriptFile
+import io.github.skriptinsight.redux.core.file.extensions.isChildrenAccordingToIndent
 import io.github.skriptinsight.redux.core.file.node.SkriptNode
 
 object IndentationUtils {
@@ -33,12 +34,3 @@ object IndentationUtils {
     }
 }
 
-fun SkriptNode.isOnSameIndentLevel(currentLevel: Int): Boolean {
-    if (indentations.isEmpty() && currentLevel == 0) return true
-
-    return rawIndentCount == currentLevel
-}
-
-internal fun SkriptNode.isChildrenAccordingToIndent(indent: Int): Boolean {
-    return this.rawIndentCount > indent //TODO: || node is EmptyLineNode || node is CommentLineNode
-}

@@ -1,6 +1,8 @@
 package io.github.skriptinsight.redux.core.file.node.indentation
 
 import io.github.skriptinsight.redux.core.file.SkriptFile
+import io.github.skriptinsight.redux.core.file.extensions.isChildrenAccordingToIndent
+import io.github.skriptinsight.redux.core.file.extensions.isOnSameIndentLevel
 import io.github.skriptinsight.redux.core.file.node.SkriptNode
 import io.github.skriptinsight.redux.core.file.work.UnitSkriptFileProcess
 

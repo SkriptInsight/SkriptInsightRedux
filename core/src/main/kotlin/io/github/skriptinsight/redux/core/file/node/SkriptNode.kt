@@ -55,6 +55,32 @@ data class SkriptNode(val lineNumber: Int, val rawContent: String, val indentati
     var comment: String = ""
 
     init {
+        computeNodeContentData()
+    }
+
+    val isSectionNode: Boolean = content.endsWith(":")
+
+    val isEmptyNode: Boolean = content.isEmpty() && comment.isEmpty()
+
+    val isCommentNode: Boolean = content.isEmpty() && comment.isNotEmpty()
+
+    /**
+     * The parent of this node.
+     */
+    var parent: SkriptNode? = null
+        get() = field
+        set(value) {
+            //Remove from old parent
+            field?.children?.remove(this)
+            //Add to new parent
+            value?.children?.add(this)
+
+            field = value
+        }
+
+    var children: MutableList<SkriptNode>? = mutableListOf()
+
+    private fun computeNodeContentData() {
         val linePatternMatcher = linePatternRegex.matcher(unIndentedRawContent)
         // Check if line has a comment
         if (linePatternMatcher.matches()) {
@@ -74,26 +100,6 @@ data class SkriptNode(val lineNumber: Int, val rawContent: String, val indentati
             commentRange = contentRange!!.end..contentRange!!.end
         }
     }
-
-    val isSectionNode: Boolean = content.endsWith(":")
-
-    private var _parent: SkriptNode? = null
-
-    /**
-     * The parent of this node.
-     */
-    var parent: SkriptNode?
-        get() = _parent
-        set(value) {
-            //Remove from old parent
-            _parent?.children?.remove(this)
-            //Add to new parent
-            value?.children?.add(this)
-
-            _parent = value
-        }
-
-    var children: MutableList<SkriptNode>? = mutableListOf()
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -122,6 +128,6 @@ data class SkriptNode(val lineNumber: Int, val rawContent: String, val indentati
     }
 
     override fun toString(): String {
-        return "SkriptNode(lineNumber=$lineNumber, indentations=${indentations.contentToString()}, content='$content', comment='$comment', isSectionNode=$isSectionNode)"
+        return "SkriptNode(lineNumber=$lineNumber, indentations=${indentations.contentToString()}, content='$content', comment='$comment', isSectionNode=$isSectionNode, isEmptyNode=$isEmptyNode, isCommentNode=$isCommentNode)"
     }
 }
