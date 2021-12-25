@@ -3,6 +3,7 @@ package io.github.skriptinsight.redux.core.patterns
 import io.github.skriptinsight.redux.core.SyntaxFacts
 import io.github.skriptinsight.redux.core.parser.SkriptParserUtils
 import io.github.skriptinsight.redux.core.patterns.impl.*
+import java.util.*
 import java.util.regex.Pattern
 
 object SkriptPatternParser {
@@ -30,7 +31,11 @@ object SkriptPatternParser {
             fun parseGroup(openBracket: Char, closeBracket: Char, handler: (String) -> SkriptPatternElement): Boolean {
                 if (char == openBracket) {
                     createLiteralFromCache()
-                    val endIndex = SkriptParserUtils.findNextClosingBracket(
+                    val endIndex = if (openBracket == closeBracket) SkriptParserUtils.findNextNotEscaped(
+                        pattern,
+                        openBracket,
+                        index + 1
+                    ) else SkriptParserUtils.findNextClosingBracket(
                         pattern, openBracket, closeBracket, index, false
                     )
 
@@ -58,6 +63,14 @@ object SkriptPatternParser {
 
             isGroupMatch = isGroupMatch or parseGroup('<', '>') {
                 RegexPatternElement(runCatching { Pattern.compile(it) }.getOrNull(), it)
+            }
+            isGroupMatch = isGroupMatch or parseGroup('%', '%') {
+                val flagValues = TypePatternElement.Flags.values()
+                val flagChars = it.takeWhile { c -> flagValues.any { fc -> fc.character == c } }
+                val flags = flagChars.toCharArray().map { c -> flagValues.first { f -> f.character == c } }
+                val flagSet =
+                    if (flags.isNotEmpty()) EnumSet.copyOf(flags) else EnumSet.noneOf(TypePatternElement.Flags::class.java)
+                TypePatternElement(it.drop(flagChars.length).split("/"), flagSet)
             }
 
             if (!isGroupMatch) {
