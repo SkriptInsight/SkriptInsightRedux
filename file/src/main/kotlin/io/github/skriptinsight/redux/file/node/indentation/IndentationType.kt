@@ -1,4 +1,4 @@
-package io.github.skriptinsight.redux.core.file.node.indentation
+package io.github.skriptinsight.redux.file.node.indentation
 
 enum class IndentationType(val char: Char = Char.MIN_VALUE, val size: Int = 0) {
     SPACE(' ', 1),

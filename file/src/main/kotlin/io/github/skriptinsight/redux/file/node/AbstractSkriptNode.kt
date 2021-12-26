@@ -1,10 +1,10 @@
-package io.github.skriptinsight.redux.core.file.node
+package io.github.skriptinsight.redux.file.node
 
-import io.github.skriptinsight.redux.core.file.SkriptFile
-import io.github.skriptinsight.redux.core.file.location.Range
-import io.github.skriptinsight.redux.core.file.node.content.NodeContentResult
-import io.github.skriptinsight.redux.core.file.node.content.NodeContentUtils
-import io.github.skriptinsight.redux.core.file.node.indentation.NodeIndentationData
+import io.github.skriptinsight.redux.file.SkriptFile
+import io.github.skriptinsight.redux.file.location.Range
+import io.github.skriptinsight.redux.file.node.content.NodeContentResult
+import io.github.skriptinsight.redux.file.node.content.NodeContentUtils
+import io.github.skriptinsight.redux.file.node.indentation.NodeIndentationData
 import java.util.*
 
 /**

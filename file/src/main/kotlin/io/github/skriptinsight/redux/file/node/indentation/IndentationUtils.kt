@@ -1,8 +1,8 @@
-package io.github.skriptinsight.redux.core.file.node.indentation
+package io.github.skriptinsight.redux.file.node.indentation
 
-import io.github.skriptinsight.redux.core.file.SkriptFile
-import io.github.skriptinsight.redux.core.file.extensions.isChildrenAccordingToIndent
-import io.github.skriptinsight.redux.core.file.node.AbstractSkriptNode
+import io.github.skriptinsight.redux.file.SkriptFile
+import io.github.skriptinsight.redux.file.extensions.isChildrenAccordingToIndent
+import io.github.skriptinsight.redux.file.node.AbstractSkriptNode
 
 object IndentationUtils {
 

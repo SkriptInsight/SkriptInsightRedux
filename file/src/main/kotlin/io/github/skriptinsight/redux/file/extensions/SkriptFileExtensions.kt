@@ -1,8 +1,8 @@
-package io.github.skriptinsight.redux.core.file.extensions
+package io.github.skriptinsight.redux.file.extensions
 
-import io.github.skriptinsight.redux.core.file.SkriptFile
-import io.github.skriptinsight.redux.core.file.node.AbstractSkriptNode
-import io.github.skriptinsight.redux.core.file.node.indentation.IndentationUtils.computeIndentationLevelsForNode
+import io.github.skriptinsight.redux.file.SkriptFile
+import io.github.skriptinsight.redux.file.node.AbstractSkriptNode
+import io.github.skriptinsight.redux.file.node.indentation.IndentationUtils.computeIndentationLevelsForNode
 
 fun SkriptFile.printStructuralTree(): String {
     return buildString {

@@ -1,4 +1,4 @@
-package io.github.skriptinsight.redux.core.file.node.indentation
+package io.github.skriptinsight.redux.file.node.indentation
 
 data class NodeIndentationData(val type: IndentationType, val amount: Int) {
     companion object {

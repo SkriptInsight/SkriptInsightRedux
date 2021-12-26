@@ -1,11 +1,11 @@
-package io.github.skriptinsight.redux.core.file.node.indentation
+package io.github.skriptinsight.redux.file.node.indentation
 
-import io.github.skriptinsight.redux.core.file.SkriptFile
-import io.github.skriptinsight.redux.core.file.extensions.isChildrenAccordingToIndent
-import io.github.skriptinsight.redux.core.file.extensions.isOnSameIndentLevel
-import io.github.skriptinsight.redux.core.file.node.AbstractSkriptNode
-import io.github.skriptinsight.redux.core.file.node.impl.SectionSkriptNode
-import io.github.skriptinsight.redux.core.file.work.UnitSkriptFileProcess
+import io.github.skriptinsight.redux.file.SkriptFile
+import io.github.skriptinsight.redux.file.extensions.isChildrenAccordingToIndent
+import io.github.skriptinsight.redux.file.extensions.isOnSameIndentLevel
+import io.github.skriptinsight.redux.file.node.AbstractSkriptNode
+import io.github.skriptinsight.redux.file.node.impl.SectionSkriptNode
+import io.github.skriptinsight.redux.file.work.UnitSkriptFileProcess
 
 class ComputeNodeDataParentAndChildrenProcess(private val currentLevel: Int) : UnitSkriptFileProcess() {
     override fun doWork(file: SkriptFile, lineNumber: Int, rawContent: String, context: AbstractSkriptNode) {

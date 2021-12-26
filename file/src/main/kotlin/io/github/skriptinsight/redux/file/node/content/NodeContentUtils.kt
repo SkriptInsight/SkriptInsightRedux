@@ -1,10 +1,10 @@
-package io.github.skriptinsight.redux.core.file.node.content
+package io.github.skriptinsight.redux.file.node.content
 
 import io.github.skriptinsight.redux.core.SyntaxFacts
-import io.github.skriptinsight.redux.core.file.extensions.getGroupRange
-import io.github.skriptinsight.redux.core.file.location.Position
-import io.github.skriptinsight.redux.core.file.location.Range
-import io.github.skriptinsight.redux.core.file.node.indentation.NodeIndentationData
+import io.github.skriptinsight.redux.file.extensions.getGroupRange
+import io.github.skriptinsight.redux.file.location.Position
+import io.github.skriptinsight.redux.file.location.Range
+import io.github.skriptinsight.redux.file.node.indentation.NodeIndentationData
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 

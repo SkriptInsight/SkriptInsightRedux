@@ -1,11 +1,11 @@
-package io.github.skriptinsight.redux.core.file.node
+package io.github.skriptinsight.redux.file.node
 
-import io.github.skriptinsight.redux.core.file.node.content.NodeContentUtils
-import io.github.skriptinsight.redux.core.file.node.impl.CommentSkriptNode
-import io.github.skriptinsight.redux.core.file.node.impl.EmptySkriptNode
-import io.github.skriptinsight.redux.core.file.node.impl.NormalSkriptNode
-import io.github.skriptinsight.redux.core.file.node.impl.SectionSkriptNode
-import io.github.skriptinsight.redux.core.file.node.indentation.NodeIndentationData
+import io.github.skriptinsight.redux.file.node.content.NodeContentUtils
+import io.github.skriptinsight.redux.file.node.impl.CommentSkriptNode
+import io.github.skriptinsight.redux.file.node.impl.EmptySkriptNode
+import io.github.skriptinsight.redux.file.node.impl.NormalSkriptNode
+import io.github.skriptinsight.redux.file.node.impl.SectionSkriptNode
+import io.github.skriptinsight.redux.file.node.indentation.NodeIndentationData
 
 object SkriptNodeUtils {
     @JvmStatic

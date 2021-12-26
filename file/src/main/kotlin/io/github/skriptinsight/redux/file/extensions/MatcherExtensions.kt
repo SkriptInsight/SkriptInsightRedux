@@ -1,7 +1,7 @@
-package io.github.skriptinsight.redux.core.file.extensions
+package io.github.skriptinsight.redux.file.extensions
 
-import io.github.skriptinsight.redux.core.file.location.Position
-import io.github.skriptinsight.redux.core.file.location.Range
+import io.github.skriptinsight.redux.file.location.Position
+import io.github.skriptinsight.redux.file.location.Range
 import java.util.regex.Matcher
 
 @JvmOverloads

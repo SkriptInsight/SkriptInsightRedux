@@ -1,4 +1,4 @@
-package io.github.skriptinsight.redux.core.file.work
+package io.github.skriptinsight.redux.file.work
 
 /**
  * Represents an abstract file process.

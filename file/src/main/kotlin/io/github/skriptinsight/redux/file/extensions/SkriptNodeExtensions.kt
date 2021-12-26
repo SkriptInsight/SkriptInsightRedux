@@ -1,8 +1,8 @@
-package io.github.skriptinsight.redux.core.file.extensions
+package io.github.skriptinsight.redux.file.extensions
 
-import io.github.skriptinsight.redux.core.file.node.AbstractSkriptNode
-import io.github.skriptinsight.redux.core.file.node.impl.CommentSkriptNode
-import io.github.skriptinsight.redux.core.file.node.impl.EmptySkriptNode
+import io.github.skriptinsight.redux.file.node.AbstractSkriptNode
+import io.github.skriptinsight.redux.file.node.impl.CommentSkriptNode
+import io.github.skriptinsight.redux.file.node.impl.EmptySkriptNode
 
 fun AbstractSkriptNode.isOnSameIndentLevel(currentLevel: Int): Boolean {
     if (indentations.isEmpty() && currentLevel == 0) return true

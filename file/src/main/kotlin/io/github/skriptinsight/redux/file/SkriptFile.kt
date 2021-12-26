@@ -1,10 +1,10 @@
-package io.github.skriptinsight.redux.core.file
+package io.github.skriptinsight.redux.file
 
-import io.github.skriptinsight.redux.core.file.node.AbstractSkriptNode
-import io.github.skriptinsight.redux.core.file.node.SkriptNodeUtils
-import io.github.skriptinsight.redux.core.file.node.indentation.IndentationUtils.computeNodeDataParents
-import io.github.skriptinsight.redux.core.file.work.FileProcessCallable
-import io.github.skriptinsight.redux.core.file.work.SkriptFileProcess
+import io.github.skriptinsight.redux.file.node.AbstractSkriptNode
+import io.github.skriptinsight.redux.file.node.SkriptNodeUtils
+import io.github.skriptinsight.redux.file.node.indentation.IndentationUtils.computeNodeDataParents
+import io.github.skriptinsight.redux.file.work.FileProcessCallable
+import io.github.skriptinsight.redux.file.work.SkriptFileProcess
 import java.io.File
 import java.net.URI
 import java.util.*
@@ -53,7 +53,7 @@ class SkriptFile(val url: URI, val nodes: ConcurrentMap<Int, AbstractSkriptNode>
             return SkriptFile(
                 url,
                 ConcurrentHashMap<Int, AbstractSkriptNode>().apply {
-                    lines.withIndex().toList().parallelStream().forEach { (i, it) -> this[i] = SkriptNodeUtils.createSkriptNodeFromLine(i, it) }
+                    lines.forEachIndexed { i, it -> this[i] = SkriptNodeUtils.createSkriptNodeFromLine(i, it) }
                 }
             )
         }
@@ -71,7 +71,10 @@ class SkriptFile(val url: URI, val nodes: ConcurrentMap<Int, AbstractSkriptNode>
         }
 
         fun fromText(text: String): SkriptFile {
-            return fromText(URI("file://${UUID.randomUUID()}"), text.lines())
+            return fromText(
+                URI("file://${UUID.randomUUID()}"),
+                text.lines()
+            )
         }
 
     }
