@@ -61,7 +61,6 @@ abstract class AbstractSkriptNode(
      * The parent of this node.
      */
     var parent: AbstractSkriptNode? = null
-        get() = field
         set(value) {
             //Remove from old parent
             field?.children?.remove(this)

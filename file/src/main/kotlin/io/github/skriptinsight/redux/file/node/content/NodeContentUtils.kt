@@ -11,7 +11,11 @@ import java.util.regex.Pattern
 object NodeContentUtils {
     private val linePatternRegex: Pattern = Pattern.compile(SyntaxFacts.linePattern)
 
-    fun computeContentData(lineNumber: Int, rawContent: String, indentations: Array<NodeIndentationData>): NodeContentResult {
+    fun computeContentData(
+        lineNumber: Int,
+        rawContent: String,
+        indentations: Array<NodeIndentationData>
+    ): NodeContentResult {
         fun pos(column: Int): Position {
             return Position(lineNumber, column)
         }
