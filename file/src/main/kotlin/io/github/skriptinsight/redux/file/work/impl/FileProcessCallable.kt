@@ -1,8 +1,9 @@
-package io.github.skriptinsight.redux.file.work
+package io.github.skriptinsight.redux.file.work.impl
 
+import io.github.skriptinsight.redux.file.work.FileProcess
 import java.util.concurrent.Callable
 
-class FileProcessCallable<F, R, C>(
+internal class FileProcessCallable<F, R, C>(
     private val process: FileProcess<F, R, C>,
     private val file: F,
     private val lineNumber: Int,

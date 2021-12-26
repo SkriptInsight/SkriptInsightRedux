@@ -1,4 +1,4 @@
-package io.github.skriptinsight.redux.file.location
+package io.github.skriptinsight.redux.core.location
 
 /**
  * Represents a range of zero-indexed positions in a character sequence.

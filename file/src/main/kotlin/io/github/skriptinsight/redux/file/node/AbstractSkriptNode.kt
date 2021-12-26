@@ -1,7 +1,7 @@
 package io.github.skriptinsight.redux.file.node
 
 import io.github.skriptinsight.redux.file.SkriptFile
-import io.github.skriptinsight.redux.file.location.Range
+import io.github.skriptinsight.redux.core.location.Range
 import io.github.skriptinsight.redux.file.node.content.NodeContentResult
 import io.github.skriptinsight.redux.file.node.content.NodeContentUtils
 import io.github.skriptinsight.redux.file.node.indentation.NodeIndentationData

@@ -1,4 +1,4 @@
-package io.github.skriptinsight.redux.file.node.indentation
+package io.github.skriptinsight.redux.file.node.processes
 
 import io.github.skriptinsight.redux.file.SkriptFile
 import io.github.skriptinsight.redux.file.extensions.isChildrenAccordingToIndent
@@ -12,7 +12,8 @@ class ComputeNodeDataParentAndChildrenProcess(private val currentLevel: Int) : U
         if (context is SectionSkriptNode && context.isOnSameIndentLevel(currentLevel)) {
             //Compute all child nodes
             val childrenNodes = file.nodes.values
-                .drop(lineNumber + 1)
+                .stream()
+                .skip((lineNumber + 1).toLong())
                 .takeWhile { it.isChildrenAccordingToIndent(currentLevel) }
 
             childrenNodes.forEach { child ->

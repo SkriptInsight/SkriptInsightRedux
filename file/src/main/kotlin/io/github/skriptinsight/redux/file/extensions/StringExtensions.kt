@@ -1,7 +1,7 @@
 package io.github.skriptinsight.redux.file.extensions
 
-import io.github.skriptinsight.redux.file.location.Position
-import io.github.skriptinsight.redux.file.location.Range
+import io.github.skriptinsight.redux.core.location.Position
+import io.github.skriptinsight.redux.core.location.Range
 
 
 /**

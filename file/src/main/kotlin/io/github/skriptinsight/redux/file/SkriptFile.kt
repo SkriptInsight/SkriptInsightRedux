@@ -3,8 +3,8 @@ package io.github.skriptinsight.redux.file
 import io.github.skriptinsight.redux.file.node.AbstractSkriptNode
 import io.github.skriptinsight.redux.file.node.SkriptNodeUtils
 import io.github.skriptinsight.redux.file.node.indentation.IndentationUtils.computeNodeDataParents
-import io.github.skriptinsight.redux.file.work.FileProcessCallable
 import io.github.skriptinsight.redux.file.work.SkriptFileProcess
+import io.github.skriptinsight.redux.file.work.impl.FileProcessCallable
 import java.io.File
 import java.net.URI
 import java.util.*

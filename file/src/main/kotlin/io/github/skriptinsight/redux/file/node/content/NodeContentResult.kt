@@ -1,6 +1,6 @@
 package io.github.skriptinsight.redux.file.node.content
 
-import io.github.skriptinsight.redux.file.location.Range
+import io.github.skriptinsight.redux.core.location.Range
 
 data class NodeContentResult(
     val content: String,

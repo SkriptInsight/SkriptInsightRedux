@@ -3,6 +3,7 @@ package io.github.skriptinsight.redux.file.node.indentation
 import io.github.skriptinsight.redux.file.SkriptFile
 import io.github.skriptinsight.redux.file.extensions.isChildrenAccordingToIndent
 import io.github.skriptinsight.redux.file.node.AbstractSkriptNode
+import io.github.skriptinsight.redux.file.node.processes.ComputeNodeDataParentAndChildrenProcess
 
 object IndentationUtils {
 
