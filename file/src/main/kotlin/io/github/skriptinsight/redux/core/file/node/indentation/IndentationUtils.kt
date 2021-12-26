@@ -2,7 +2,7 @@ package io.github.skriptinsight.redux.core.file.node.indentation
 
 import io.github.skriptinsight.redux.core.file.SkriptFile
 import io.github.skriptinsight.redux.core.file.extensions.isChildrenAccordingToIndent
-import io.github.skriptinsight.redux.core.file.node.SkriptNode
+import io.github.skriptinsight.redux.core.file.node.AbstractSkriptNode
 
 object IndentationUtils {
 
@@ -15,7 +15,7 @@ object IndentationUtils {
         }
     }
 
-    fun computeIndentationLevelsForNode(nodeData: MutableCollection<SkriptNode>): List<Int> {
+    fun computeIndentationLevelsForNode(nodeData: MutableCollection<AbstractSkriptNode>): List<Int> {
         val firstIndent = nodeData.firstOrNull()?.rawIndentCount ?: 0
 
         return nodeData

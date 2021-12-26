@@ -1,6 +1,7 @@
 package io.github.skriptinsight.redux.core.file
 
-import io.github.skriptinsight.redux.core.file.node.SkriptNode
+import io.github.skriptinsight.redux.core.file.node.AbstractSkriptNode
+import io.github.skriptinsight.redux.core.file.node.SkriptNodeUtils
 import io.github.skriptinsight.redux.core.file.node.indentation.IndentationUtils.computeNodeDataParents
 import io.github.skriptinsight.redux.core.file.work.FileProcessCallable
 import io.github.skriptinsight.redux.core.file.work.SkriptFileProcess
@@ -18,7 +19,7 @@ import kotlin.reflect.KProperty
  * @param nodes The data for each node (line)
  * @author NickAcPT
  */
-class SkriptFile(val url: URI, val nodes: ConcurrentMap<Int, SkriptNode>) {
+class SkriptFile(val url: URI, val nodes: ConcurrentMap<Int, AbstractSkriptNode>) {
     init {
         computeNodeDataParents(this)
     }
@@ -51,8 +52,8 @@ class SkriptFile(val url: URI, val nodes: ConcurrentMap<Int, SkriptNode>) {
         private fun fromText(url: URI, lines: List<String>): SkriptFile {
             return SkriptFile(
                 url,
-                ConcurrentHashMap<Int, SkriptNode>().apply {
-                    lines.forEachIndexed { i, it -> this[i] = SkriptNode.fromLine(i, it) }
+                ConcurrentHashMap<Int, AbstractSkriptNode>().apply {
+                    lines.withIndex().toList().parallelStream().forEach { (i, it) -> this[i] = SkriptNodeUtils.createSkriptNodeFromLine(i, it) }
                 }
             )
         }
@@ -81,7 +82,7 @@ class SkriptFile(val url: URI, val nodes: ConcurrentMap<Int, SkriptNode>) {
     val rootNodes
         get() = nodes.values.filter { it.parent == null }
 
-    operator fun get(index: Int): SkriptNode? {
+    operator fun get(index: Int): AbstractSkriptNode? {
         return nodes[index]
     }
 
