@@ -25,10 +25,3 @@ data class Range(val start: Position, val end: Position) {
         return other >= start && other <= end
     }
 }
-
-/**
- * Returns a substring specified by the given [range] of indices.
- */
-fun String.substring(range: Range): String {
-    return this.substring(range.start.resolvePosition(this) until range.end.resolvePosition(this))
-}

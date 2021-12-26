@@ -15,7 +15,7 @@ data class Position(val lineNumber: Int, val column: Int) {
         return resolvePosition(string.lines())
     }
 
-    fun resolvePosition(lines: List<String>): Int {
+    private fun resolvePosition(lines: List<String>): Int {
         var targetLine = lineNumber
 
         if (lines.size < targetLine)
@@ -44,8 +44,3 @@ data class Position(val lineNumber: Int, val column: Int) {
         return if (lineComparison != 0) lineComparison else column.compareTo(other.column)
     }
 }
-
-fun String.substring(position: Position): String {
-    return this.substring(position.resolvePosition(this))
-}
-
