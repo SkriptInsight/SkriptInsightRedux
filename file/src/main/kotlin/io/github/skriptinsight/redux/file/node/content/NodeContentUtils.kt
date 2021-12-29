@@ -1,15 +1,15 @@
 package io.github.skriptinsight.redux.file.node.content
 
-import io.github.skriptinsight.redux.core.SyntaxFacts
-import io.github.skriptinsight.redux.file.extensions.getGroupRange
+import io.github.skriptinsight.redux.core.SkriptSyntaxFacts
 import io.github.skriptinsight.redux.core.location.Position
 import io.github.skriptinsight.redux.core.location.Range
+import io.github.skriptinsight.redux.file.extensions.getGroupRange
 import io.github.skriptinsight.redux.file.node.indentation.NodeIndentationData
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
 object NodeContentUtils {
-    private val linePatternRegex: Pattern = Pattern.compile(SyntaxFacts.linePattern)
+    private val linePatternRegex: Pattern = Pattern.compile(SkriptSyntaxFacts.linePattern)
 
     fun computeContentData(
         lineNumber: Int,
@@ -24,35 +24,31 @@ object NodeContentUtils {
             return matcher.getGroupRange(group, offsetStart, offsetEnd, lineNumber)
         }
 
-        val content: String
-        val comment: String
-        val contentRange: Range
-        val commentRange: Range
-
         val unIndentedRawContent: String = rawContent.dropWhile { it.isWhitespace() }
 
         val normalizedIndentCount = indentations.sumOf { it.type.size * it.amount }
 
         val rawIndentCount = rawContent.takeWhile { it.isWhitespace() }.count()
 
-        val linePatternMatcher = linePatternRegex.matcher(unIndentedRawContent)
-        // Check if line has a comment
-        if (linePatternMatcher.matches()) {
-            val originalContent = linePatternMatcher.group(1)
-            content = originalContent.trimEnd()
-            comment = linePatternMatcher.group(2)
+        var comment = ""
+        var content = unIndentedRawContent.trimEnd()
+        var contentRange = pos(rawIndentCount)..pos(rawIndentCount + content.length)
+        var commentRange = contentRange.end..contentRange.end
 
-            //Compute range for content and comment
-            val trimmedCharsAmount = originalContent.length - content.length
-            contentRange =
-                groupRange(linePatternMatcher, 1, rawIndentCount, offsetEnd = rawIndentCount - trimmedCharsAmount)
-            commentRange = groupRange(linePatternMatcher, 2, rawIndentCount)
-        } else {
-            //No comment. Default to un-indented raw content and no comment
-            comment = ""
-            content = unIndentedRawContent.trimEnd()
-            contentRange = pos(rawIndentCount)..pos(rawIndentCount + content.length)
-            commentRange = contentRange.end..contentRange.end
+        // Check if line has a comment
+        if (unIndentedRawContent.contains("#")) {
+            val linePatternMatcher = linePatternRegex.matcher(unIndentedRawContent)
+            if (linePatternMatcher.matches()) {
+                val originalContent = linePatternMatcher.group(1)
+                content = originalContent.trimEnd()
+                comment = linePatternMatcher.group(2)
+
+                //Compute range for content and comment
+                val trimmedCharsAmount = originalContent.length - content.length
+                contentRange =
+                    groupRange(linePatternMatcher, 1, rawIndentCount, offsetEnd = rawIndentCount - trimmedCharsAmount)
+                commentRange = groupRange(linePatternMatcher, 2, rawIndentCount)
+            }
         }
 
         return NodeContentResult(

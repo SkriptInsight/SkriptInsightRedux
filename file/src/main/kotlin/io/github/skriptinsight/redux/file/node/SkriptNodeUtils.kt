@@ -6,10 +6,11 @@ import io.github.skriptinsight.redux.file.node.impl.EmptySkriptNode
 import io.github.skriptinsight.redux.file.node.impl.NormalSkriptNode
 import io.github.skriptinsight.redux.file.node.impl.SectionSkriptNode
 import io.github.skriptinsight.redux.file.node.indentation.NodeIndentationData
+import io.github.skriptinsight.redux.file.workspace.skript.SkriptWorkspace
 
 object SkriptNodeUtils {
     @JvmStatic
-    fun createSkriptNodeFromLine(lineNumber: Int, content: String): AbstractSkriptNode {
+    fun createSkriptNodeFromLine(workspace: SkriptWorkspace, lineNumber: Int, content: String): AbstractSkriptNode {
         val indentationData = NodeIndentationData.fromIndentation(content.takeWhile { it.isWhitespace() })
 
         val nodeContentResult = NodeContentUtils.computeContentData(lineNumber, content, indentationData)
@@ -25,7 +26,19 @@ object SkriptNodeUtils {
             }
         } else {
             if (nodeContentResult.content.endsWith(":")) {
-                SectionSkriptNode(lineNumber, content, indentationData, nodeContentResult)
+                var resultingSectionNode: SectionSkriptNode? = null
+                for (sectionProvider in workspace.sectionProviders) {
+                    resultingSectionNode =
+                        sectionProvider.parseSection(lineNumber, content, indentationData, nodeContentResult)
+                    if (resultingSectionNode != null) {
+                        break
+                    }
+                }
+
+                if (resultingSectionNode == null) resultingSectionNode =
+                    SectionSkriptNode(lineNumber, content, indentationData, nodeContentResult)
+
+                resultingSectionNode
             } else {
                 NormalSkriptNode(lineNumber, content, indentationData, nodeContentResult)
             }

@@ -2,7 +2,7 @@ package io.github.skriptinsight.redux.core
 
 import org.intellij.lang.annotations.Language
 
-object SyntaxFacts {
+object SkriptSyntaxFacts {
 
     @Language("Regexp")
     val choiceSplitterPattern = Regex("\\|(?![^(]*\\))")

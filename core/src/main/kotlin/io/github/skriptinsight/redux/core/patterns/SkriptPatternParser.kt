@@ -1,6 +1,6 @@
 package io.github.skriptinsight.redux.core.patterns
 
-import io.github.skriptinsight.redux.core.SyntaxFacts
+import io.github.skriptinsight.redux.core.SkriptSyntaxFacts
 import io.github.skriptinsight.redux.core.parser.SkriptParserUtils
 import io.github.skriptinsight.redux.core.patterns.impl.*
 import java.util.*
@@ -58,7 +58,7 @@ object SkriptPatternParser {
             }
 
             isGroupMatch = isGroupMatch or parseGroup('(', ')') {
-                ChoicePatternElement(SyntaxFacts.choiceSplitterPattern.split(it).map { parseChoice(it) })
+                ChoicePatternElement(SkriptSyntaxFacts.choiceSplitterPattern.split(it).map { parseChoice(it) })
             }
 
             isGroupMatch = isGroupMatch or parseGroup('<', '>') {

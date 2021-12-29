@@ -56,7 +56,7 @@ class SkriptFile(val url: URI, val workspace: SkriptWorkspace, val nodes: Concur
                 url,
                 workspace,
                 ConcurrentHashMap<Int, AbstractSkriptNode>().apply {
-                    lines.forEachIndexed { i, it -> this[i] = SkriptNodeUtils.createSkriptNodeFromLine(i, it) }
+                    lines.forEachIndexed { i, it -> this[i] = SkriptNodeUtils.createSkriptNodeFromLine(workspace, i, it) }
                 }
             )
         }
