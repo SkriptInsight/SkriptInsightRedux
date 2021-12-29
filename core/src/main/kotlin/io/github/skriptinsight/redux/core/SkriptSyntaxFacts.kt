@@ -33,7 +33,7 @@ object SkriptSyntaxFacts {
     val commandRegex = ("(?i)^command /?(\\S+)\\s*(\\s+(.+))?$")
 
     @Language("Regexp")
-    val varRegex =
+    const val varRegex =
         ("(?<varprefix>(?<theprefix>the )?var(?<iableprefix>iable)? )?\\{((?:[^{}]|%\\{|}%)+)}")
 
     @Language("Regexp")

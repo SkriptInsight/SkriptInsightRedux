@@ -4,14 +4,14 @@ import io.github.skriptinsight.redux.core.SkriptSyntaxFacts
 import io.github.skriptinsight.redux.file.extensions.getGroupContentAndRange
 import io.github.skriptinsight.redux.file.node.content.NodeContentResult
 import io.github.skriptinsight.redux.file.node.impl.SectionSkriptNode
-import io.github.skriptinsight.redux.file.node.impl.skript.FunctionSectionSkriptNode
+import io.github.skriptinsight.redux.file.node.impl.skript.function.FunctionSectionSkriptNode
+import io.github.skriptinsight.redux.file.node.impl.skript.function.FunctionSignature
 import io.github.skriptinsight.redux.file.node.indentation.NodeIndentationData
 import io.github.skriptinsight.redux.file.workspace.providers.SectionParser
 import java.util.regex.Pattern
 
 object FunctionSectionParser : SectionParser {
     private val functionRegexPattern = Pattern.compile(SkriptSyntaxFacts.functionRegex)
-    private val functionParamsPattern = Pattern.compile(SkriptSyntaxFacts.paramRegex)
 
     override fun parseSection(
         lineNumber: Int,
@@ -32,18 +32,20 @@ object FunctionSectionParser : SectionParser {
             return null
         }
 
-        val (functionName, functionRange) = functionMatcher.getGroupContentAndRange("name", 0, lineNumber)
+        val (functionName, nameRange) = functionMatcher.getGroupContentAndRange("name", 0, lineNumber)
         val (params, paramsRange) = functionMatcher.getGroupContentAndRange("params", 0, lineNumber)
         val (returnType, returnTypeRange) = functionMatcher.getGroupContentAndRange("return", 0, lineNumber)
 
-        return FunctionSectionSkriptNode(
+        val signature = FunctionSignature.createFromSectionNode(
             functionName,
-            functionRange,
+            nameRange,
             params,
             paramsRange,
             returnType,
             returnTypeRange,
-            lineNumber, content, indentations, nodeContentResult
+            lineNumber
         )
+
+        return FunctionSectionSkriptNode(signature, lineNumber, content, indentations, nodeContentResult)
     }
 }

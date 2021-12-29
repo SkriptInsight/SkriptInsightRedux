@@ -16,19 +16,25 @@ fun Matcher.getGroupRange(id: String, offsetStart: Int = 0, offsetEnd: Int = 0, 
 
 @JvmName("getSimpleGroupRange")
 @JvmOverloads
-fun Matcher.getGroupRange(id: Int, offset: Int = 0, lineNumber: Int): Range {
-    return getGroupRange(id, offsetStart = offset, offsetEnd = offset, lineNumber = lineNumber)
+fun Matcher.getGroupRange(id: Int, offset: Int = 0, lineNumber: Int): Range? {
+    return getGroupRange(
+        id,
+        offsetStart = offset,
+        offsetEnd = offset,
+        lineNumber = lineNumber
+    ).takeUnless { it.start.column == -1 || it.end.column == -1 }
 }
+
 @JvmName("getSimpleGroupRange")
 @JvmOverloads
 fun Matcher.getGroupRange(id: String, offset: Int = 0, lineNumber: Int): Range {
     return getGroupRange(id, offsetStart = offset, offsetEnd = offset, lineNumber = lineNumber)
 }
 
-fun Matcher.getGroupContentAndRange(id: String, offset: Int, lineNumber: Int): Pair<String, Range> {
+fun Matcher.getGroupContentAndRange(id: String, offset: Int, lineNumber: Int): Pair<String?, Range?> {
     return Pair(group(id), getGroupRange(id, offset, lineNumber))
 }
 
-fun Matcher.getGroupContentAndRange(id: Int, offset: Int, lineNumber: Int): Pair<String, Range> {
+fun Matcher.getGroupContentAndRange(id: Int, offset: Int, lineNumber: Int): Pair<String?, Range?> {
     return Pair(group(id), getGroupRange(id, offset, lineNumber))
 }

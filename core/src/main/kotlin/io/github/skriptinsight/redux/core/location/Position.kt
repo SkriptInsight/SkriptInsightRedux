@@ -43,4 +43,13 @@ data class Position(val lineNumber: Int, val column: Int) {
         val lineComparison = lineNumber.compareTo(other.lineNumber)
         return if (lineComparison != 0) lineComparison else column.compareTo(other.column)
     }
+
+    operator fun plus(other: Position): Position {
+        return Position(lineNumber + other.lineNumber, column + other.column)
+    }
+
+    operator fun minus(other: Position): Position {
+        return Position(lineNumber - other.lineNumber, column - other.column)
+    }
+
 }

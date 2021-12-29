@@ -24,4 +24,8 @@ data class Range(val start: Position, val end: Position) {
     fun contains(other: Position): Boolean {
         return other >= start && other <= end
     }
+
+    operator fun plus(other: Position): Range {
+        return Range(start + other, end + other)
+    }
 }
