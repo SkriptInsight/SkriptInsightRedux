@@ -49,4 +49,13 @@ data class FunctionParameter private constructor(
             )
         }
     }
+
+    override fun toString(): String {
+        if (!isValid) return "<invalid parameter>"
+        return if (defaultValue == null) {
+            "$name: $type"
+        } else {
+            "$name: $type = $defaultValue"
+        }
+    }
 }

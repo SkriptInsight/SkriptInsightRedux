@@ -14,7 +14,6 @@ fun main(args: Array<String>) {
     launcher.startListening().get()
 }
 
-
 private class ExitOnClose(private val delegate: InputStream): InputStream() {
     override fun read(): Int = exitIfNegative { delegate.read() }
 

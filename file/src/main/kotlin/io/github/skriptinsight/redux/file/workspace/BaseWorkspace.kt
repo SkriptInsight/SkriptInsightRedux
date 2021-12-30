@@ -18,4 +18,8 @@ abstract class BaseWorkspace {
     fun getFile(url: URI): SkriptFile? {
         return files[url]
     }
+
+    fun removeFile(uri: URI) {
+        files.remove(uri)
+    }
 }

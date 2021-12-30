@@ -20,7 +20,7 @@ import kotlin.reflect.KProperty
  * @param nodes The data for each node (line)
  * @author NickAcPT
  */
-class SkriptFile(val url: URI, val workspace: SkriptWorkspace, val nodes: ConcurrentMap<Int, AbstractSkriptNode>) {
+class SkriptFile private constructor(val url: URI, val workspace: SkriptWorkspace, val nodes: ConcurrentMap<Int, AbstractSkriptNode>) {
     init {
         workspace.addFile(this)
         computeNodeDataParents(this)
