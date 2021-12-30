@@ -3,6 +3,11 @@ plugins {
     kotlin("jvm") version "1.6.10" apply false
 }
 
+repositories {
+    mavenCentral()
+    maven("https://oss.sonatype.org/content/repositories/snapshots/")
+}
+
 subprojects {
     apply(plugin = "org.jetbrains.kotlin.jvm")
 
@@ -11,6 +16,7 @@ subprojects {
 
     repositories {
         mavenCentral()
+        maven("https://oss.sonatype.org/content/repositories/snapshots/")
     }
 
     dependencies {
