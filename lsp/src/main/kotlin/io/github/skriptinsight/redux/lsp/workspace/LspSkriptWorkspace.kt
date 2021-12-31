@@ -5,6 +5,7 @@ import io.github.skriptinsight.redux.file.SkriptFile
 import io.github.skriptinsight.redux.file.work.SkriptFileProcess
 import io.github.skriptinsight.redux.file.workspace.WorkspaceLogger
 import io.github.skriptinsight.redux.file.workspace.skript.SkriptWorkspace
+import io.github.skriptinsight.redux.lsp.workspace.configuration.LspConfiguration
 import io.github.skriptinsight.redux.lsp.workspace.process.WorkReportingFileProcessCallable
 import io.github.skriptinsight.redux.lsp.workspace.work.LspWork
 import kotlinx.coroutines.CoroutineScope
@@ -15,14 +16,11 @@ import kotlin.coroutines.CoroutineContext
 
 class LspSkriptWorkspace(override val coroutineContext: CoroutineContext) : SkriptWorkspace(), CoroutineScope {
     lateinit var client: LanguageClient
-
     private var isLspClientInitialized = false
-
     private val tasksStack = ArrayDeque<() -> Unit>()
-
     override val logger: WorkspaceLogger = LspWorkspaceLogger(this)
-
     val gson = Gson()
+    var configuration: LspConfiguration = LspConfiguration()
 
     override fun <R> runProcess(skriptFile: SkriptFile, process: SkriptFileProcess<R>): List<R> {
         val work = LspWork(client)

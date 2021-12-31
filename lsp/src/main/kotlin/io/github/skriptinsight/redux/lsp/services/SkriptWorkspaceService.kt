@@ -1,6 +1,8 @@
 package io.github.skriptinsight.redux.lsp.services
 
+import com.google.gson.JsonObject
 import io.github.skriptinsight.redux.lsp.workspace.LspSkriptWorkspace
+import io.github.skriptinsight.redux.lsp.workspace.configuration.LspConfiguration
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.future.await
 import org.eclipse.lsp4j.ConfigurationItem
@@ -37,6 +39,14 @@ class SkriptWorkspaceService(override var coroutineContext: CoroutineContext, va
         }))).await()
 
         workspace.logger.info("Successfully requested configuration from client")
+
+        val configJsonObject = configResult[0] as? JsonObject ?: return
+
+        val configuration = workspace.gson.fromJson(configJsonObject, LspConfiguration::class.java)
+
+        workspace.logger.info("Successfully parsed configuration from client $configuration")
+
+        workspace.configuration = configuration
     }
 
 }

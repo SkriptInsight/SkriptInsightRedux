@@ -17,7 +17,8 @@ import java.net.URI
 import java.util.concurrent.CompletableFuture
 import kotlin.coroutines.CoroutineContext
 
-class SkriptTextDocumentService(override var coroutineContext: CoroutineContext, val workspace: LspSkriptWorkspace) : TextDocumentService, LanguageClientAware,
+class SkriptTextDocumentService(override var coroutineContext: CoroutineContext, val workspace: LspSkriptWorkspace) :
+    TextDocumentService, LanguageClientAware,
     CoroutineScope {
 
     lateinit var client: LanguageClient
@@ -43,7 +44,7 @@ class SkriptTextDocumentService(override var coroutineContext: CoroutineContext,
         var detail = ""
         if (node is FunctionSectionSkriptNode) {
             name = node.signature?.name ?: return null
-            detail = "(${node.signature?.parameters?.joinToString()})" ?: ""
+            detail = "(${node.signature?.parameters?.joinToString()})"
         }
         val contentRange = node.contentRange.toLspRange()
         val kind = if (node is FunctionSectionSkriptNode) SymbolKind.Function else SymbolKind.Event
