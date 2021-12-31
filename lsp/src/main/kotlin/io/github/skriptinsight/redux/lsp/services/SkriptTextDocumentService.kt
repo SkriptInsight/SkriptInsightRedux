@@ -67,4 +67,8 @@ class SkriptTextDocumentService(val workspace: LspSkriptWorkspace) : TextDocumen
     override fun didSave(params: DidSaveTextDocumentParams) {
         workspace.logger.info("User saved document ${params.textDocument.uri}")
     }
+
+    fun onClientInitialized(client: LanguageClient) {
+
+    }
 }

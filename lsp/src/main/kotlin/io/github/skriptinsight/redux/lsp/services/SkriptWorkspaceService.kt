@@ -23,4 +23,8 @@ class SkriptWorkspaceService(val workspace: LspSkriptWorkspace) : WorkspaceServi
         workspace.logger.info("User changed watched files")
     }
 
+    fun onClientInitialized(client: LanguageClient) {
+
+    }
+
 }

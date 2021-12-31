@@ -1,5 +1,6 @@
 package io.github.skriptinsight.redux.lsp
 
+import com.google.gson.GsonBuilder
 import io.github.skriptinsight.redux.lsp.services.SkriptTextDocumentService
 import io.github.skriptinsight.redux.lsp.services.SkriptWorkspaceService
 import io.github.skriptinsight.redux.lsp.workspace.LspSkriptWorkspace
@@ -18,6 +19,8 @@ class SkriptInsightReduxLanguageServer : LanguageServer, LanguageClientAware {
         val capabilities = ServerCapabilities()
         capabilities.setTextDocumentSync(TextDocumentSyncKind.Incremental)
         capabilities.workspace = WorkspaceServerCapabilities()
+        capabilities.workspace.workspaceFolders = WorkspaceFoldersOptions()
+        capabilities.workspace.workspaceFolders.setChangeNotifications(true)
         capabilities.setDocumentSymbolProvider(true)
 
         return completedFuture(InitializeResult(capabilities, ServerInfo("SkriptInsight")))
@@ -39,7 +42,22 @@ class SkriptInsightReduxLanguageServer : LanguageServer, LanguageClientAware {
         return workspaceService
     }
 
+    override fun initialized(params: InitializedParams) {
+        textDocumentService.onClientInitialized(client)
+        workspaceService.onClientInitialized(client)
+
+        val gson = GsonBuilder().create()
+        val configResult = client.configuration(ConfigurationParams(listOf(ConfigurationItem().apply {
+            this.section = "skriptinsight"
+        }))).thenAccept {
+
+            println()
+        }
+    }
+
+    lateinit var client: LanguageClient
     override fun connect(client: LanguageClient) {
+        this.client = client
         currentWorkspace.client = client
         textDocumentService.connect(client)
         workspaceService.connect(client)
