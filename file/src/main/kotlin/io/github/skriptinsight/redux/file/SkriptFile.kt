@@ -1,5 +1,6 @@
 package io.github.skriptinsight.redux.file
 
+import io.github.skriptinsight.redux.core.utils.ExtraDataContainer
 import io.github.skriptinsight.redux.file.node.AbstractSkriptNode
 import io.github.skriptinsight.redux.file.node.SkriptNodeUtils
 import io.github.skriptinsight.redux.file.node.indentation.IndentationUtils.computeNodeDataParents
@@ -12,7 +13,6 @@ import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentMap
 import java.util.concurrent.ForkJoinPool
-import kotlin.reflect.KProperty
 
 /**
  * Represents a **Skript file**.
@@ -20,34 +20,11 @@ import kotlin.reflect.KProperty
  * @param nodes The data for each node (line)
  * @author NickAcPT
  */
-class SkriptFile private constructor(val url: URI, val workspace: SkriptWorkspace, val nodes: ConcurrentMap<Int, AbstractSkriptNode>) {
+class SkriptFile private constructor(val url: URI, val workspace: SkriptWorkspace, val nodes: ConcurrentMap<Int, AbstractSkriptNode>):
+    ExtraDataContainer {
     init {
         workspace.addFile(this)
         computeNodeDataParents(this)
-    }
-
-    private val extraData = mutableMapOf<String, Any>()
-
-    @Suppress("UNCHECKED_CAST")
-    operator fun <T> get(property: KProperty<T>): T? {
-        return get(property.name)
-    }
-
-    operator fun <T> set(property: KProperty<T>, value: T?) {
-        set(property.name, value)
-    }
-
-    @Suppress("UNCHECKED_CAST")
-    operator fun <T> get(name: String): T? {
-        return extraData[name] as? T?
-    }
-
-    operator fun set(name: String, value: Any?) {
-        if (value == null) {
-            extraData.remove(name)
-        } else {
-            extraData[name] = value
-        }
     }
 
     companion object {
@@ -99,6 +76,8 @@ class SkriptFile private constructor(val url: URI, val workspace: SkriptWorkspac
         }
         return ForkJoinPool.commonPool().invokeAll(map).map { it.get() }
     }
+
+    override val extraData: MutableMap<String, Any> = ConcurrentHashMap()
 
 }
 

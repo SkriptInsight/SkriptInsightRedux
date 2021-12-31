@@ -6,7 +6,7 @@ package io.github.skriptinsight.redux.core.location
  * @param column The zero-indexed position in the line.
  * @author NickAcPT
  */
-data class Position(val lineNumber: Int, val column: Int) {
+data class Position(var lineNumber: Int, var column: Int) {
     operator fun rangeTo(other: Position): Range {
         return Range(this, other)
     }

@@ -1,7 +1,7 @@
 package io.github.skriptinsight.redux.file.node
 
-import io.github.skriptinsight.redux.file.SkriptFile
 import io.github.skriptinsight.redux.core.location.Range
+import io.github.skriptinsight.redux.file.SkriptFile
 import io.github.skriptinsight.redux.file.node.content.NodeContentResult
 import io.github.skriptinsight.redux.file.node.content.NodeContentUtils
 import io.github.skriptinsight.redux.file.node.indentation.NodeIndentationData
@@ -16,7 +16,7 @@ import java.util.*
  * @author NickAcPT
  */
 abstract class AbstractSkriptNode(
-    val lineNumber: Int,
+    var lineNumber: Int,
     val rawContent: String,
     val indentations: Array<NodeIndentationData>,
     nodeContentResult: NodeContentResult?
@@ -41,6 +41,9 @@ abstract class AbstractSkriptNode(
 
     var content: String
     var comment: String
+
+    open val ranges: List<Range>
+        get() = listOf(contentRange, commentRange)
 
     init {
         val (contentResult, contentRangeResult, commentResult, commentRangeResult, unIndentedRawContentResult, normalizedIndentCountResult, rawIndentCountResult) = nodeContentResult

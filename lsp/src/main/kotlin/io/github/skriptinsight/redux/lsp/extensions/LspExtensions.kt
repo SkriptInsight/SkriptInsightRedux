@@ -15,3 +15,14 @@ fun InsightRange.toLspRange(): LspRange {
 fun InsightPosition.toLspPosition(): LspPosition {
     return LspPosition(lineNumber, column)
 }
+
+fun LspPosition.toInsightPosition(): InsightPosition {
+    return InsightPosition(line, character)
+}
+
+fun LspRange.toInsightRange(): InsightRange {
+    return InsightRange(
+        start.toInsightPosition(),
+        end.toInsightPosition()
+    )
+}

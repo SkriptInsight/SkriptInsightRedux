@@ -58,7 +58,7 @@ object SkriptTextDocumentService : TextDocumentService, LanguageClientAware {
     }
 
     override fun didChange(params: DidChangeTextDocumentParams) {
-        client.logMessage(MessageParams(MessageType.Info, "didChange"))
+        WorkspaceActionHandler.onFileChange(currentWorkspace, params.textDocument.uri, params.contentChanges)
     }
 
     override fun didClose(params: DidCloseTextDocumentParams) {

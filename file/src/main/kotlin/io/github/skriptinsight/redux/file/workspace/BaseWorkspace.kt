@@ -1,10 +1,12 @@
 package io.github.skriptinsight.redux.file.workspace
 
+import io.github.skriptinsight.redux.core.utils.ExtraDataContainer
 import io.github.skriptinsight.redux.file.SkriptFile
 import io.github.skriptinsight.redux.file.workspace.providers.SectionParser
 import java.net.URI
+import java.util.concurrent.ConcurrentHashMap
 
-abstract class BaseWorkspace {
+abstract class BaseWorkspace : ExtraDataContainer {
     abstract val language: WorkspaceLanguage
 
     abstract val sectionProviders: List<SectionParser>
@@ -22,4 +24,6 @@ abstract class BaseWorkspace {
     fun removeFile(uri: URI) {
         files.remove(uri)
     }
+
+    override val extraData: MutableMap<String, Any> = ConcurrentHashMap()
 }

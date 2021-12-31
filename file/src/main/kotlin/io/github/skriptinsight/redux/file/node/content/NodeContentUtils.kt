@@ -33,7 +33,7 @@ object NodeContentUtils {
         var comment = ""
         var content = unIndentedRawContent.trimEnd()
         var contentRange = pos(rawIndentCount)..pos(rawIndentCount + content.length)
-        var commentRange = contentRange.end..contentRange.end
+        var commentRange = contentRange.end.copy()..contentRange.end.copy()
 
         // Check if line has a comment
         if (unIndentedRawContent.contains("#")) {

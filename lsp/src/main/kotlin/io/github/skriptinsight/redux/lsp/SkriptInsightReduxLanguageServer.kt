@@ -39,6 +39,7 @@ class SkriptInsightReduxLanguageServer : LanguageServer, LanguageClientAware {
     }
 
     override fun connect(client: LanguageClient) {
+        currentWorkspace["client"] = client
         SkriptWorkspaceService.connect(client)
         SkriptTextDocumentService.connect(client)
     }
