@@ -93,42 +93,11 @@ object WorkspaceActionHandler {
                 // New lines have been added to the file
                 // So we need to shift the old nodes to the new line numbers
 
-                val newLineCount = patchedStrings.size - changedLineCount
-                val shiftRangeStart = startLine + 1
-
-                for (i in nodes.size downTo shiftRangeStart) {
-                    val currentNode = nodes[i] ?: continue
-                    currentNode.lineNumber += newLineCount
-
-                    currentNode.ranges.forEach {
-                        it.start.lineNumber += newLineCount
-                        it.end.lineNumber += newLineCount
-                    }
-
-                    nodes[i + newLineCount] = currentNode
-                    currentNode.parent?.children?.remove(currentNode)
-                    nodes.remove(i)
-                }
+                handleShiftingForExistingLineNodes(patchedStrings, changedLineCount, startLine, true)
             } else if (patchedStrings.size < changedLineCount) {
                 // Old lines have been removed from the file
                 // So we need to shift the old nodes to the new line numbers
-
-                val newLineCount = changedLineCount - patchedStrings.size
-                val shiftRangeStart = startLine + 1
-
-                for (i in shiftRangeStart..nodes.keys.maxOf { it }) {
-                    val currentNode = nodes[i] ?: continue
-                    currentNode.lineNumber -= newLineCount
-
-                    currentNode.ranges.forEach {
-                        it.start.lineNumber -= newLineCount
-                        it.end.lineNumber -= newLineCount
-                    }
-
-                    nodes[i - newLineCount] = currentNode
-                    currentNode.parent?.children?.remove(currentNode)
-                    nodes.remove(i)
-                }
+                handleShiftingForExistingLineNodes(patchedStrings, changedLineCount, startLine, false)
             }
 
             // Add the new nodes to the file
@@ -146,6 +115,35 @@ object WorkspaceActionHandler {
 
                 nodes[finalLineNumber] = newNode.value
             }
+        }
+    }
+
+    private fun SkriptFile.handleShiftingForExistingLineNodes(
+        patchedStrings: List<String>,
+        changedLineCount: Int,
+        startLine: Int,
+        added: Boolean
+    ) {
+        val newLineCount = if (added) patchedStrings.size - changedLineCount else changedLineCount - patchedStrings.size
+        val shiftRangeStart = startLine + 1
+
+        var progression = nodes.keys.maxOf { it } downTo shiftRangeStart
+        if (!added) progression = progression.reversed()
+
+        for (i in progression) {
+            val currentNode = nodes[i] ?: continue
+            val offsetAmount = if (added) newLineCount else -newLineCount
+
+            currentNode.lineNumber += offsetAmount
+
+            currentNode.ranges.forEach {
+                it.start.lineNumber += offsetAmount
+                it.end.lineNumber += offsetAmount
+            }
+
+            nodes[i + offsetAmount] = currentNode
+            currentNode.parent?.children?.remove(currentNode)
+            nodes.remove(i)
         }
     }
 
