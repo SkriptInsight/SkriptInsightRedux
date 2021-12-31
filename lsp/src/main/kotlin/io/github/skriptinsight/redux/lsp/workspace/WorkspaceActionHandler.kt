@@ -2,6 +2,7 @@ package io.github.skriptinsight.redux.lsp.workspace
 
 import io.github.skriptinsight.redux.file.SkriptFile
 import io.github.skriptinsight.redux.file.node.SkriptNodeUtils
+import io.github.skriptinsight.redux.file.node.indentation.IndentationUtils
 import io.github.skriptinsight.redux.file.workspace.skript.SkriptWorkspace
 import io.github.skriptinsight.redux.lsp.extensions.toInsightRange
 import org.eclipse.lsp4j.MessageParams
@@ -34,6 +35,7 @@ object WorkspaceActionHandler {
             contentChanges.forEach { change ->
                 file.applyFileChange(workspace, change)
             }
+            IndentationUtils.computeNodeDataParents(file)
         }
 
         workspace.get<LanguageClient>("client")?.logMessage(
@@ -162,7 +164,6 @@ object WorkspaceActionHandler {
                 nodes[finalLineNumber] = newNode.value
             }
         }
-        //IndentationUtils.computeNodeDataParents(this)
     }
 
 }
