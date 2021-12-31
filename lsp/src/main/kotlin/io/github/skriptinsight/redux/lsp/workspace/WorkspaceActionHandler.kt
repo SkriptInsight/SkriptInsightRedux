@@ -5,10 +5,7 @@ import io.github.skriptinsight.redux.file.node.SkriptNodeUtils
 import io.github.skriptinsight.redux.file.node.indentation.IndentationUtils
 import io.github.skriptinsight.redux.file.workspace.skript.SkriptWorkspace
 import io.github.skriptinsight.redux.lsp.extensions.toInsightRange
-import org.eclipse.lsp4j.MessageParams
-import org.eclipse.lsp4j.MessageType
 import org.eclipse.lsp4j.TextDocumentContentChangeEvent
-import org.eclipse.lsp4j.services.LanguageClient
 import java.net.URI
 import kotlin.time.DurationUnit
 import kotlin.time.ExperimentalTime
@@ -38,11 +35,8 @@ object WorkspaceActionHandler {
             IndentationUtils.computeNodeDataParents(file)
         }
 
-        workspace.get<LanguageClient>("client")?.logMessage(
-            MessageParams(
-                MessageType.Info,
-                "Handling of ${contentChanges.size} change(s) took ${resultTime.toDouble(DurationUnit.MILLISECONDS)} ms"
-            )
+        workspace.logger.info(
+            "Handling of ${contentChanges.size} change(s) took ${resultTime.toDouble(DurationUnit.MILLISECONDS)} ms"
         )
 
     }
@@ -85,19 +79,12 @@ object WorkspaceActionHandler {
             val builder = StringBuilder(oldNodesAsString)
 
             // Apply the changes to the raw content of the nodes
-            val replaceResult = measureTime {
-                kotlin.runCatching {
-                    builder.delete(startPosition, endPosition)
-                    builder.insert(startPosition, change.text)
-                }
+            val replaceResultTime = measureTime {
+                builder.delete(startPosition, endPosition)
+                builder.insert(startPosition, change.text)
             }
 
-            workspace.get<LanguageClient>("client")?.logMessage(
-                MessageParams(
-                    MessageType.Info,
-                    "Replacing of $changedLineCount line(s) took ${replaceResult.toDouble(DurationUnit.MILLISECONDS)} ms"
-                )
-            )
+            workspace.logger.info("Replacing of $changedLineCount lines took ${replaceResultTime.toDouble(DurationUnit.MILLISECONDS)} ms")
 
             val patchedStrings = builder.lines()
 
@@ -155,12 +142,8 @@ object WorkspaceActionHandler {
                     )
                 }
 
-                workspace.get<LanguageClient>("client")?.logMessage(
-                    MessageParams(
-                        MessageType.Info,
-                        "Created new node for line $finalLineNumber in ${newNode.duration.toDouble(DurationUnit.MILLISECONDS)} ms"
-                    )
-                )
+                workspace.logger.info("Created new node for line $finalLineNumber in ${replaceResultTime.toDouble(DurationUnit.MILLISECONDS)} ms")
+
                 nodes[finalLineNumber] = newNode.value
             }
         }

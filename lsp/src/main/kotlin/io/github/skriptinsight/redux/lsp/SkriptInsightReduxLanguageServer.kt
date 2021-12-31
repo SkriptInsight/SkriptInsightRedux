@@ -1,17 +1,18 @@
 package io.github.skriptinsight.redux.lsp
 
-import io.github.skriptinsight.redux.file.workspace.skript.SkriptWorkspace
 import io.github.skriptinsight.redux.lsp.services.SkriptTextDocumentService
 import io.github.skriptinsight.redux.lsp.services.SkriptWorkspaceService
+import io.github.skriptinsight.redux.lsp.workspace.LspSkriptWorkspace
 import org.eclipse.lsp4j.*
 import org.eclipse.lsp4j.services.*
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.CompletableFuture.completedFuture
 import kotlin.system.exitProcess
 
-val currentWorkspace = SkriptWorkspace()
-
 class SkriptInsightReduxLanguageServer : LanguageServer, LanguageClientAware {
+    private val currentWorkspace = LspSkriptWorkspace()
+    private val textDocumentService = SkriptTextDocumentService(currentWorkspace)
+    private val workspaceService = SkriptWorkspaceService(currentWorkspace)
 
     override fun initialize(params: InitializeParams): CompletableFuture<InitializeResult> {
         val capabilities = ServerCapabilities()
@@ -31,16 +32,16 @@ class SkriptInsightReduxLanguageServer : LanguageServer, LanguageClientAware {
     }
 
     override fun getTextDocumentService(): TextDocumentService {
-        return SkriptTextDocumentService
+        return textDocumentService
     }
 
     override fun getWorkspaceService(): WorkspaceService {
-        return SkriptWorkspaceService
+        return workspaceService
     }
 
     override fun connect(client: LanguageClient) {
-        currentWorkspace["client"] = client
-        SkriptWorkspaceService.connect(client)
-        SkriptTextDocumentService.connect(client)
+        currentWorkspace.client = client
+        textDocumentService.connect(client)
+        workspaceService.connect(client)
     }
 }

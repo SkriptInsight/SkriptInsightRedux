@@ -3,8 +3,8 @@ package io.github.skriptinsight.redux.lsp.services
 import io.github.skriptinsight.redux.file.node.AbstractSkriptNode
 import io.github.skriptinsight.redux.file.node.impl.EmptySkriptNode
 import io.github.skriptinsight.redux.file.node.impl.skript.function.FunctionSectionSkriptNode
-import io.github.skriptinsight.redux.lsp.currentWorkspace
 import io.github.skriptinsight.redux.lsp.extensions.toLspRange
+import io.github.skriptinsight.redux.lsp.workspace.LspSkriptWorkspace
 import io.github.skriptinsight.redux.lsp.workspace.WorkspaceActionHandler
 import org.eclipse.lsp4j.*
 import org.eclipse.lsp4j.jsonrpc.messages.Either
@@ -14,7 +14,7 @@ import org.eclipse.lsp4j.services.TextDocumentService
 import java.net.URI
 import java.util.concurrent.CompletableFuture
 
-object SkriptTextDocumentService : TextDocumentService, LanguageClientAware {
+class SkriptTextDocumentService(val workspace: LspSkriptWorkspace) : TextDocumentService, LanguageClientAware {
 
     lateinit var client: LanguageClient
 
@@ -23,8 +23,7 @@ object SkriptTextDocumentService : TextDocumentService, LanguageClientAware {
     }
 
     override fun documentSymbol(params: DocumentSymbolParams): CompletableFuture<List<Either<SymbolInformation, DocumentSymbol>>> {
-        val file =
-            currentWorkspace.getFile(URI(params.textDocument.uri))
+        val file = workspace.getFile(URI(params.textDocument.uri))
                 ?: return CompletableFuture.completedFuture(emptyList())
 
         val result = file.rootNodes.mapNotNull { nodeToDocumentSymbol(it) }
@@ -54,18 +53,18 @@ object SkriptTextDocumentService : TextDocumentService, LanguageClientAware {
     }
 
     override fun didOpen(params: DidOpenTextDocumentParams) {
-        WorkspaceActionHandler.onFileOpen(currentWorkspace, params.textDocument.uri, params.textDocument.text)
+        WorkspaceActionHandler.onFileOpen(workspace, params.textDocument.uri, params.textDocument.text)
     }
 
     override fun didChange(params: DidChangeTextDocumentParams) {
-        WorkspaceActionHandler.onFileChange(currentWorkspace, params.textDocument.uri, params.contentChanges)
+        WorkspaceActionHandler.onFileChange(workspace, params.textDocument.uri, params.contentChanges)
     }
 
     override fun didClose(params: DidCloseTextDocumentParams) {
-        WorkspaceActionHandler.onFileClose(currentWorkspace, params.textDocument.uri)
+        WorkspaceActionHandler.onFileClose(workspace, params.textDocument.uri)
     }
 
     override fun didSave(params: DidSaveTextDocumentParams) {
-        client.logMessage(MessageParams(MessageType.Info, "didSave"))
+        workspace.logger.info("User saved document ${params.textDocument.uri}")
     }
 }

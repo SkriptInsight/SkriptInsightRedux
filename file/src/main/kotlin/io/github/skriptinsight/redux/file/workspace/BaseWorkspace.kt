@@ -13,6 +13,8 @@ abstract class BaseWorkspace : ExtraDataContainer {
 
     private val files: MutableMap<URI, SkriptFile> = mutableMapOf()
 
+    open val logger: WorkspaceLogger = FallbackWorkspaceLogger
+
     fun addFile(file: SkriptFile) {
         files[file.url] = file
     }

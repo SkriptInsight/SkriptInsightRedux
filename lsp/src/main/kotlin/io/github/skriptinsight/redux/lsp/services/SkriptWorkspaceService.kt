@@ -1,14 +1,13 @@
 package io.github.skriptinsight.redux.lsp.services
 
+import io.github.skriptinsight.redux.lsp.workspace.LspSkriptWorkspace
 import org.eclipse.lsp4j.DidChangeConfigurationParams
 import org.eclipse.lsp4j.DidChangeWatchedFilesParams
-import org.eclipse.lsp4j.MessageParams
-import org.eclipse.lsp4j.MessageType
 import org.eclipse.lsp4j.services.LanguageClient
 import org.eclipse.lsp4j.services.LanguageClientAware
 import org.eclipse.lsp4j.services.WorkspaceService
 
-object SkriptWorkspaceService : WorkspaceService, LanguageClientAware {
+class SkriptWorkspaceService(val workspace: LspSkriptWorkspace) : WorkspaceService, LanguageClientAware {
 
     lateinit var client: LanguageClient
 
@@ -17,11 +16,11 @@ object SkriptWorkspaceService : WorkspaceService, LanguageClientAware {
     }
 
     override fun didChangeConfiguration(params: DidChangeConfigurationParams) {
-        client.logMessage(MessageParams(MessageType.Info, "didChangeConfiguration"))
+        workspace.logger.info("User changed configuration")
     }
 
     override fun didChangeWatchedFiles(params: DidChangeWatchedFilesParams) {
-        client.logMessage(MessageParams(MessageType.Info, "didChangeWatchedFiles"))
+        workspace.logger.info("User changed watched files")
     }
 
 }

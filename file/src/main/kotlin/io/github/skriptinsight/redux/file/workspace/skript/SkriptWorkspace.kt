@@ -4,7 +4,7 @@ import io.github.skriptinsight.redux.file.workspace.BaseWorkspace
 import io.github.skriptinsight.redux.file.workspace.WorkspaceLanguage
 import io.github.skriptinsight.redux.file.workspace.providers.SectionParser
 
-class SkriptWorkspace : BaseWorkspace() {
+open class SkriptWorkspace : BaseWorkspace() {
     override val language: WorkspaceLanguage
         get() = WorkspaceLanguage.SKRIPT
 
