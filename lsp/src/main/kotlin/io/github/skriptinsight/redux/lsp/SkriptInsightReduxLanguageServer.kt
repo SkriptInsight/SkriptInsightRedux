@@ -51,7 +51,6 @@ class SkriptInsightReduxLanguageServer : LanguageServer, LanguageClientAware, Co
     }
 
     override fun initialized(params: InitializedParams) {
-
         launch {
             textDocumentService.onClientInitialized(client)
             workspaceService.onClientInitialized(client)

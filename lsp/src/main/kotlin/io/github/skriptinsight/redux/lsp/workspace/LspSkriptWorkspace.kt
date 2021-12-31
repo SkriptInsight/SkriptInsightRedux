@@ -5,38 +5,49 @@ import io.github.skriptinsight.redux.file.SkriptFile
 import io.github.skriptinsight.redux.file.work.SkriptFileProcess
 import io.github.skriptinsight.redux.file.workspace.WorkspaceLogger
 import io.github.skriptinsight.redux.file.workspace.skript.SkriptWorkspace
-import io.github.skriptinsight.redux.lsp.workspace.process.SuspendSkriptFileProcess
+import io.github.skriptinsight.redux.lsp.workspace.process.WorkReportingFileProcessCallable
+import io.github.skriptinsight.redux.lsp.workspace.work.LspWork
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.asFlow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.toList
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
 import org.eclipse.lsp4j.services.LanguageClient
+import java.util.concurrent.ForkJoinPool
+import java.util.concurrent.atomic.AtomicInteger
 import kotlin.coroutines.CoroutineContext
 
 class LspSkriptWorkspace(override val coroutineContext: CoroutineContext) : SkriptWorkspace(), CoroutineScope {
     lateinit var client: LanguageClient
+
+    private var isLspClientInitialized = false
+
+    private val tasksStack = ArrayDeque<() -> Unit>()
 
     override val logger: WorkspaceLogger = LspWorkspaceLogger(this)
 
     val gson = Gson()
 
     override fun <R> runProcess(skriptFile: SkriptFile, process: SkriptFileProcess<R>): List<R> {
-        if (process !is SuspendSkriptFileProcess<*>) {
-            return super.runProcess(skriptFile, process)
+        val work = LspWork(client)
+        work.reportBeginWork(process.title, process.description)
+        val nodesCount = skriptFile.nodes.maxOfOrNull { it.key } ?: 0
+        val finishedCount = AtomicInteger(0)
+        val map = skriptFile.nodes.map {
+            WorkReportingFileProcessCallable(
+                process, skriptFile, it.key, it.value.rawContent, it.value, work,
+                nodesCount, finishedCount
+            )
         }
+        val result = ForkJoinPool.commonPool().invokeAll(map).map { it.get() }
+        work.reportWorkDone(process.description)
+        return result
+    }
 
-        with(skriptFile) {
-            val lspWorkspace = workspace as? LspSkriptWorkspace ?: throw IllegalStateException("Workspace is not LspSkriptWorkspace")
+    override fun delayUntilReadyIfNeeded(code: () -> Unit) {
+        if (!isLspClientInitialized) tasksStack.addLast(code) else code()
+    }
 
-            return runBlocking {
-               nodes.entries.asFlow().map {
-                   withContext(lspWorkspace.coroutineContext) {
-                       process.doWorkSuspend(skriptFile, it.key, it.value.rawContent, it.value) as R
-                   }
-               }.toList()
-            }
+    fun onClientInitialized() {
+        isLspClientInitialized = true
+        while (tasksStack.isNotEmpty()) {
+            tasksStack.removeFirst().invoke()
         }
     }
 }

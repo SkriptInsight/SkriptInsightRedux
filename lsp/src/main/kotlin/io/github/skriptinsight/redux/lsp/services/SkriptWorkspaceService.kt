@@ -3,8 +3,10 @@ package io.github.skriptinsight.redux.lsp.services
 import io.github.skriptinsight.redux.lsp.workspace.LspSkriptWorkspace
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.future.await
-import org.eclipse.lsp4j.*
-import org.eclipse.lsp4j.jsonrpc.messages.Either
+import org.eclipse.lsp4j.ConfigurationItem
+import org.eclipse.lsp4j.ConfigurationParams
+import org.eclipse.lsp4j.DidChangeConfigurationParams
+import org.eclipse.lsp4j.DidChangeWatchedFilesParams
 import org.eclipse.lsp4j.services.LanguageClient
 import org.eclipse.lsp4j.services.LanguageClientAware
 import org.eclipse.lsp4j.services.WorkspaceService
@@ -28,18 +30,7 @@ class SkriptWorkspaceService(override var coroutineContext: CoroutineContext, va
     }
 
     suspend fun onClientInitialized(client: LanguageClient) {
-        client.createProgress(WorkDoneProgressCreateParams(Either.forLeft("sus"))).await()
-
-        client.notifyProgress(
-            ProgressParams(
-                Either.forLeft("sus"),
-                Either.forLeft(WorkDoneProgressBegin(
-                ).apply {
-                    title = "sus"
-                    this.message = "Being sus is fun"
-                })
-            )
-        )
+        workspace.onClientInitialized()
 
         val configResult = client.configuration(ConfigurationParams(listOf(ConfigurationItem().apply {
             this.section = "skriptinsight"

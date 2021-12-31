@@ -27,7 +27,6 @@ object WorkspaceActionHandler {
     fun onFileChange(workspace: SkriptWorkspace, uri: String, contentChanges: List<TextDocumentContentChangeEvent>) {
         val file = workspace.getFile(URI(uri)) ?: return
 
-
         val resultTime = measureTime {
             contentChanges.forEach { change ->
                 file.applyFileChange(workspace, change)
@@ -127,7 +126,7 @@ object WorkspaceActionHandler {
         val newLineCount = if (added) patchedStrings.size - changedLineCount else changedLineCount - patchedStrings.size
         val shiftRangeStart = startLine + 1
 
-        var progression = nodes.keys.maxOf { it } downTo shiftRangeStart
+        var progression = (nodes.keys.maxOfOrNull { it } ?: 0) downTo shiftRangeStart
         if (!added) progression = progression.reversed()
 
         for (i in progression) {

@@ -31,4 +31,8 @@ abstract class BaseWorkspace : ExtraDataContainer {
     abstract fun <R> runProcess(skriptFile: SkriptFile, process: SkriptFileProcess<R>): List<R>
 
     override val extraData: MutableMap<String, Any> = ConcurrentHashMap()
+
+    open fun delayUntilReadyIfNeeded(code: () -> Unit) {
+        code()
+    }
 }

@@ -18,11 +18,15 @@ import java.util.concurrent.ConcurrentMap
  * @param nodes The data for each node (line)
  * @author NickAcPT
  */
-class SkriptFile private constructor(val url: URI, val workspace: SkriptWorkspace, val nodes: ConcurrentMap<Int, AbstractSkriptNode>):
+class SkriptFile private constructor(
+    val url: URI,
+    val workspace: SkriptWorkspace,
+    val nodes: ConcurrentMap<Int, AbstractSkriptNode>
+) :
     ExtraDataContainer {
     init {
         workspace.addFile(this)
-        computeNodeDataParents(this)
+        workspace.delayUntilReadyIfNeeded { computeNodeDataParents(this) }
     }
 
     companion object {
@@ -31,7 +35,9 @@ class SkriptFile private constructor(val url: URI, val workspace: SkriptWorkspac
                 url,
                 workspace,
                 ConcurrentHashMap<Int, AbstractSkriptNode>().apply {
-                    lines.forEachIndexed { i, it -> this[i] = SkriptNodeUtils.createSkriptNodeFromLine(workspace, i, it) }
+                    lines.forEachIndexed { i, it ->
+                        this[i] = SkriptNodeUtils.createSkriptNodeFromLine(workspace, i, it)
+                    }
                 }
             )
         }
