@@ -1,19 +1,27 @@
 package io.github.skriptinsight.redux.lsp
 
-import com.google.gson.GsonBuilder
 import io.github.skriptinsight.redux.lsp.services.SkriptTextDocumentService
 import io.github.skriptinsight.redux.lsp.services.SkriptWorkspaceService
 import io.github.skriptinsight.redux.lsp.workspace.LspSkriptWorkspace
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import org.eclipse.lsp4j.*
 import org.eclipse.lsp4j.services.*
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.CompletableFuture.completedFuture
+import kotlin.coroutines.CoroutineContext
 import kotlin.system.exitProcess
 
-class SkriptInsightReduxLanguageServer : LanguageServer, LanguageClientAware {
-    private val currentWorkspace = LspSkriptWorkspace()
-    private val textDocumentService = SkriptTextDocumentService(currentWorkspace)
-    private val workspaceService = SkriptWorkspaceService(currentWorkspace)
+class SkriptInsightReduxLanguageServer : LanguageServer, LanguageClientAware, CoroutineScope {
+    override val coroutineContext: CoroutineContext
+            = Dispatchers.Default + SupervisorJob()
+
+    private val currentWorkspace = LspSkriptWorkspace(coroutineContext)
+
+    private val textDocumentService = SkriptTextDocumentService(coroutineContext, currentWorkspace)
+    private val workspaceService = SkriptWorkspaceService(coroutineContext, currentWorkspace)
 
     override fun initialize(params: InitializeParams): CompletableFuture<InitializeResult> {
         val capabilities = ServerCapabilities()
@@ -43,15 +51,10 @@ class SkriptInsightReduxLanguageServer : LanguageServer, LanguageClientAware {
     }
 
     override fun initialized(params: InitializedParams) {
-        textDocumentService.onClientInitialized(client)
-        workspaceService.onClientInitialized(client)
 
-        val gson = GsonBuilder().create()
-        val configResult = client.configuration(ConfigurationParams(listOf(ConfigurationItem().apply {
-            this.section = "skriptinsight"
-        }))).thenAccept {
-
-            println()
+        launch {
+            textDocumentService.onClientInitialized(client)
+            workspaceService.onClientInitialized(client)
         }
     }
 

@@ -1,7 +1,6 @@
 plugins {
     application
     distribution
-    //id("com.github.johnrengelman.shadow") version "7.1.1"
 }
 
 repositories {
@@ -11,6 +10,7 @@ repositories {
 dependencies {
     implementation(project(":file"))
     implementation("org.eclipse.lsp4j:org.eclipse.lsp4j:0.12.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.6.0")
 }
 
 val lspMainClass = "io.github.skriptinsight.redux.lsp.LanguageServerEntrypointKt"

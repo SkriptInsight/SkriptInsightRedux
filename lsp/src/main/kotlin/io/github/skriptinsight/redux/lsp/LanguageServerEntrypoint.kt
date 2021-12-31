@@ -13,7 +13,7 @@ fun main(args: Array<String>) {
     try {
         val server = SkriptInsightReduxLanguageServer()
         val input = ExitOnClose(System.`in`)
-        val threads = Executors.newSingleThreadExecutor { Thread(it, "client") }
+        val threads = Executors.newSingleThreadExecutor { Thread(it, "LSP-Client") }
         val launcher = Builder<LanguageClient>()
             .setLocalService(server)
             .setRemoteInterface(LanguageClient::class.java)

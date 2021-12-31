@@ -5,14 +5,12 @@ import io.github.skriptinsight.redux.file.node.AbstractSkriptNode
 import io.github.skriptinsight.redux.file.node.SkriptNodeUtils
 import io.github.skriptinsight.redux.file.node.indentation.IndentationUtils.computeNodeDataParents
 import io.github.skriptinsight.redux.file.work.SkriptFileProcess
-import io.github.skriptinsight.redux.file.work.impl.FileProcessCallable
 import io.github.skriptinsight.redux.file.workspace.skript.SkriptWorkspace
 import java.io.File
 import java.net.URI
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentMap
-import java.util.concurrent.ForkJoinPool
 
 /**
  * Represents a **Skript file**.
@@ -71,10 +69,7 @@ class SkriptFile private constructor(val url: URI, val workspace: SkriptWorkspac
     }
 
     fun <R> runProcess(process: SkriptFileProcess<R>): List<R> {
-        val map = nodes.map {
-            FileProcessCallable(process, this, it.key, it.value.rawContent, it.value)
-        }
-        return ForkJoinPool.commonPool().invokeAll(map).map { it.get() }
+        return workspace.runProcess(this, process)
     }
 
     override val extraData: MutableMap<String, Any> = ConcurrentHashMap()

@@ -6,6 +6,8 @@ import io.github.skriptinsight.redux.file.node.impl.skript.function.FunctionSect
 import io.github.skriptinsight.redux.lsp.extensions.toLspRange
 import io.github.skriptinsight.redux.lsp.workspace.LspSkriptWorkspace
 import io.github.skriptinsight.redux.lsp.workspace.WorkspaceActionHandler
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.future.future
 import org.eclipse.lsp4j.*
 import org.eclipse.lsp4j.jsonrpc.messages.Either
 import org.eclipse.lsp4j.services.LanguageClient
@@ -13,8 +15,10 @@ import org.eclipse.lsp4j.services.LanguageClientAware
 import org.eclipse.lsp4j.services.TextDocumentService
 import java.net.URI
 import java.util.concurrent.CompletableFuture
+import kotlin.coroutines.CoroutineContext
 
-class SkriptTextDocumentService(val workspace: LspSkriptWorkspace) : TextDocumentService, LanguageClientAware {
+class SkriptTextDocumentService(override var coroutineContext: CoroutineContext, val workspace: LspSkriptWorkspace) : TextDocumentService, LanguageClientAware,
+    CoroutineScope {
 
     lateinit var client: LanguageClient
 
@@ -22,13 +26,14 @@ class SkriptTextDocumentService(val workspace: LspSkriptWorkspace) : TextDocumen
         this.client = client
     }
 
-    override fun documentSymbol(params: DocumentSymbolParams): CompletableFuture<List<Either<SymbolInformation, DocumentSymbol>>> {
-        val file = workspace.getFile(URI(params.textDocument.uri))
-                ?: return CompletableFuture.completedFuture(emptyList())
+    override fun documentSymbol(params: DocumentSymbolParams): CompletableFuture<List<Either<SymbolInformation, DocumentSymbol>>> =
+        future {
+            val file = workspace.getFile(URI(params.textDocument.uri))
+                ?: return@future emptyList()
 
-        val result = file.rootNodes.mapNotNull { nodeToDocumentSymbol(it) }
-        return CompletableFuture.completedFuture(result.map { Either.forRight(it) })
-    }
+            val result = file.rootNodes.mapNotNull { nodeToDocumentSymbol(it) }
+            return@future result.map { Either.forRight(it) }
+        }
 
     private fun nodeToDocumentSymbol(
         node: AbstractSkriptNode,
@@ -68,7 +73,7 @@ class SkriptTextDocumentService(val workspace: LspSkriptWorkspace) : TextDocumen
         workspace.logger.info("User saved document ${params.textDocument.uri}")
     }
 
-    fun onClientInitialized(client: LanguageClient) {
+    suspend fun onClientInitialized(client: LanguageClient) {
 
     }
 }

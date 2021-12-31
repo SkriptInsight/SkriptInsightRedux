@@ -7,7 +7,10 @@ import io.github.skriptinsight.redux.file.node.AbstractSkriptNode
 import io.github.skriptinsight.redux.file.node.impl.SectionSkriptNode
 import io.github.skriptinsight.redux.file.work.UnitSkriptFileProcess
 
-class ComputeNodeDataParentAndChildrenProcess(private val currentLevel: Int) : UnitSkriptFileProcess() {
+class ComputeNodeDataParentAndChildrenProcess(private val currentLevel: Int) : UnitSkriptFileProcess(
+    "Structurally parsing code",
+    "Analysing indentations (level ${currentLevel + 1})"
+) {
     override fun doWork(file: SkriptFile, lineNumber: Int, rawContent: String, context: AbstractSkriptNode) {
         if (context is SectionSkriptNode && context.isOnSameIndentLevel(currentLevel)) {
             //Compute all child nodes
