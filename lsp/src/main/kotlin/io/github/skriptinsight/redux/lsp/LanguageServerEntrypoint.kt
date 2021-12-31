@@ -1,20 +1,45 @@
 package io.github.skriptinsight.redux.lsp
 
-import org.eclipse.lsp4j.launch.LSPLauncher
+import org.eclipse.lsp4j.launch.LSPLauncher.Builder
+import org.eclipse.lsp4j.services.LanguageClient
 import java.io.InputStream
 import java.util.concurrent.Executors
 import kotlin.system.exitProcess
 
 fun main(args: Array<String>) {
-    val server = SkriptInsightReduxLanguageServer()
-    val input = ExitOnClose(System.`in`)
-    val threads = Executors.newSingleThreadExecutor { Thread(it, "client") }
-    val launcher = LSPLauncher.createServerLauncher(server, input, System.out, threads) { it }
-    server.connect(launcher.remoteProxy)
-    launcher.startListening().get()
+    Thread.setDefaultUncaughtExceptionHandler { _, e ->
+        handleFatalException(e)
+    }
+    try {
+        val server = SkriptInsightReduxLanguageServer()
+        val input = ExitOnClose(System.`in`)
+        val threads = Executors.newSingleThreadExecutor { Thread(it, "client") }
+        val launcher = Builder<LanguageClient>()
+            .setLocalService(server)
+            .setRemoteInterface(LanguageClient::class.java)
+            .setInput(input)
+            .setOutput(System.out)
+            .setExecutorService(threads)
+            .setExceptionHandler {
+                handleFatalException(it)
+            }
+            .wrapMessages { it }
+            .create()
+
+        server.connect(launcher.remoteProxy)
+        launcher.startListening().get()
+    } catch (e: Exception) {
+        handleFatalException(e)
+    }
 }
 
-private class ExitOnClose(private val delegate: InputStream): InputStream() {
+private fun handleFatalException(e: Throwable): Nothing {
+    System.err.println("Exception thrown inside Language server: ")
+    e.printStackTrace(System.err)
+    exitProcess(1)
+}
+
+private class ExitOnClose(private val delegate: InputStream) : InputStream() {
     override fun read(): Int = exitIfNegative { delegate.read() }
 
     override fun read(b: ByteArray): Int = exitIfNegative { delegate.read(b) }
