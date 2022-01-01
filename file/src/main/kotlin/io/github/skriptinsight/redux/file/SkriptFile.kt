@@ -1,6 +1,8 @@
 package io.github.skriptinsight.redux.file
 
+import io.github.skriptinsight.redux.core.event.post
 import io.github.skriptinsight.redux.core.utils.ExtraDataContainer
+import io.github.skriptinsight.redux.file.event.SkriptFileLoadedEvent
 import io.github.skriptinsight.redux.file.node.AbstractSkriptNode
 import io.github.skriptinsight.redux.file.node.SkriptNodeUtils
 import io.github.skriptinsight.redux.file.node.indentation.IndentationUtils.computeNodeDataParents
@@ -22,11 +24,12 @@ class SkriptFile private constructor(
     val url: URI,
     val workspace: SkriptWorkspace,
     val nodes: ConcurrentMap<Int, AbstractSkriptNode>
-) :
-    ExtraDataContainer {
+) : ExtraDataContainer {
+
     init {
         workspace.addFile(this)
         workspace.delayUntilReadyIfNeeded { computeNodeDataParents(this) }
+        workspace.delayUntilReadyIfNeeded { SkriptFileLoadedEvent(this, workspace).post() }
     }
 
     companion object {
@@ -70,12 +73,17 @@ class SkriptFile private constructor(
     val rootNodes
         get() = nodes.values.filter { it.parent == null }
 
+    val maxLineNumber: Int
+        get() = nodes.keys.maxOfOrNull { it } ?: 0
+
     operator fun get(index: Int): AbstractSkriptNode? {
         return nodes[index]
     }
 
-    fun <R> runProcess(process: SkriptFileProcess<R>): List<R> {
-        return workspace.runProcess(this, process)
+    fun <R> runProcess(process: SkriptFileProcess<R>) = runProcess(process, 0, maxLineNumber)
+
+    fun <R> runProcess(process: SkriptFileProcess<R>, startLine: Int, endLine: Int): List<R> {
+        return workspace.runProcess(this, process, startLine, endLine)
     }
 
     override val extraData: MutableMap<String, Any> = ConcurrentHashMap()

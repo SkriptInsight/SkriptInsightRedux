@@ -28,7 +28,11 @@ abstract class BaseWorkspace : ExtraDataContainer {
         files.remove(uri)
     }
 
-    abstract fun <R> runProcess(skriptFile: SkriptFile, process: SkriptFileProcess<R>): List<R>
+    abstract fun <R> runProcess(
+        skriptFile: SkriptFile, process: SkriptFileProcess<R>,
+        startIndex: Int,
+        endIndex: Int
+    ): List<R>
 
     override val extraData: MutableMap<String, Any> = ConcurrentHashMap()
 

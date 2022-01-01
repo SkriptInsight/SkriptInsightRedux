@@ -1,6 +1,7 @@
 package io.github.skriptinsight.redux.lsp.workspace
 
 import io.github.skriptinsight.redux.file.SkriptFile
+import io.github.skriptinsight.redux.file.analysis.managers.InspectionManager
 import io.github.skriptinsight.redux.file.node.SkriptNodeUtils
 import io.github.skriptinsight.redux.file.node.indentation.IndentationUtils
 import io.github.skriptinsight.redux.file.workspace.skript.SkriptWorkspace
@@ -17,6 +18,7 @@ object WorkspaceActionHandler {
     fun onFileOpen(workspace: SkriptWorkspace, uri: String, text: String) {
         val file = SkriptFile.fromText(URI(uri), workspace, text)
         workspace.addFile(file)
+        InspectionManager.inspectFile(file)
     }
 
     fun onFileClose(workspace: SkriptWorkspace, uri: String) {
@@ -48,6 +50,7 @@ object WorkspaceActionHandler {
             lines.forEachIndexed { i, lineContent ->
                 nodes[i] = SkriptNodeUtils.createSkriptNodeFromLine(workspace, i, lineContent)
             }
+            InspectionManager.inspectFile(this)
         } else {
             // There has been an incremental change to the file
             val startLine = change.range.start.line
@@ -114,6 +117,8 @@ object WorkspaceActionHandler {
 
                 nodes[finalLineNumber] = newNode.value
             }
+
+            InspectionManager.inspectFile(this, startLine, endLine)
         }
     }
 
@@ -126,7 +131,7 @@ object WorkspaceActionHandler {
         val newLineCount = if (added) patchedStrings.size - changedLineCount else changedLineCount - patchedStrings.size
         val shiftRangeStart = startLine + 1
 
-        var progression = (nodes.keys.maxOfOrNull { it } ?: 0) downTo shiftRangeStart
+        var progression = maxLineNumber downTo shiftRangeStart
         if (!added) progression = progression.reversed()
 
         for (i in progression) {

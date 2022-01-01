@@ -19,7 +19,7 @@ class FunctionSectionSkriptNode(
                 it.nameRange,
                 it.parametersRange,
                 it.returnTypeRange,
-                *it.parameters.flatMap { p -> listOf(p.nameRange, p.typeRange, p.defaultValueRange) }.toTypedArray()
+                *it.parameters.flatMap { p -> listOf(p.fullRange, p.nameRange, p.typeRange, p.defaultValueRange) }.toTypedArray()
             )
         } ?: emptyList())
 }

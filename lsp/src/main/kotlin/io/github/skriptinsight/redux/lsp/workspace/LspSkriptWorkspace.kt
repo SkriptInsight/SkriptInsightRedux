@@ -22,12 +22,16 @@ class LspSkriptWorkspace(override val coroutineContext: CoroutineContext) : Skri
     val gson = Gson()
     var configuration: LspConfiguration = LspConfiguration()
 
-    override fun <R> runProcess(skriptFile: SkriptFile, process: SkriptFileProcess<R>): List<R> {
+    override fun <R> runProcess(
+        skriptFile: SkriptFile, process: SkriptFileProcess<R>,
+        startIndex: Int,
+        endIndex: Int
+    ): List<R> {
         val work = LspWork(client)
         work.reportBeginWork(process.title, process.description)
-        val nodesCount = skriptFile.nodes.maxOfOrNull { it.key } ?: 0
+        val nodesCount = skriptFile.maxLineNumber
         val finishedCount = AtomicInteger(0)
-        val map = skriptFile.nodes.map {
+        val map = skriptFile.nodes.filterKeys { it in startIndex..endIndex }.map {
             WorkReportingFileProcessCallable(
                 process, skriptFile, it.key, it.value.rawContent, it.value, work,
                 nodesCount, finishedCount

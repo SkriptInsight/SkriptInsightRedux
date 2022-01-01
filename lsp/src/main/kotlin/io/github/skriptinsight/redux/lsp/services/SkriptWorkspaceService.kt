@@ -44,7 +44,7 @@ class SkriptWorkspaceService(override var coroutineContext: CoroutineContext, va
 
         val configuration = workspace.gson.fromJson(configJsonObject, LspConfiguration::class.java)
 
-        workspace.logger.info("Successfully parsed configuration from client $configuration")
+        workspace.logger.info("Successfully parsed configuration from client")
 
         workspace.configuration = configuration
     }

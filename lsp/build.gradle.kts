@@ -8,7 +8,7 @@ repositories {
 }
 
 dependencies {
-    implementation(project(":file"))
+    implementation(project(":file-analysis"))
     implementation("org.eclipse.lsp4j:org.eclipse.lsp4j:0.12.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.6.0")
 }

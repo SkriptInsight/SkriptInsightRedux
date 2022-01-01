@@ -8,6 +8,7 @@ import io.github.skriptinsight.redux.file.extensions.substring
 import java.util.regex.Pattern
 
 data class FunctionParameter private constructor(
+    val fullRange: Range,
     val name: String?,
     val type: String?,
     val nameRange: Range?,
@@ -24,10 +25,11 @@ data class FunctionParameter private constructor(
         fun createParameter(rawParameters: String, range: Range, initialIndex: Position, lineNumber: Int): FunctionParameter {
             val currentRawParameter = rawParameters.substring(range)
             val matcher = functionParamsPattern.matcher(currentRawParameter)
+            val parameterRange = range.plus(initialIndex.copy(lineNumber = 0))
 
             // If the parameter doesn't match the parameter regex, then the parameter is invalid
             if (!matcher.matches()) {
-                return FunctionParameter(null, null, null, null)
+                return FunctionParameter(parameterRange, null, null, null, null)
             }
 
             val (name, nameRange) = matcher.getGroupContentAndRange(1, 0, lineNumber)
@@ -36,10 +38,11 @@ data class FunctionParameter private constructor(
 
             // If name or type is null, then the parameter is invalid
             if (name == null || type == null) {
-                return FunctionParameter(null, null, null, null)
+                return FunctionParameter(parameterRange, null, null, null, null)
             }
 
             return FunctionParameter(
+                parameterRange,
                 name,
                 type,
                 nameRange?.plus(initialIndex)?.plus(range.start),

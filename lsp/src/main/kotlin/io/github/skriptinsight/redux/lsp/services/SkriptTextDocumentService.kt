@@ -1,8 +1,11 @@
 package io.github.skriptinsight.redux.lsp.services
 
+import io.github.skriptinsight.redux.core.event.bus.EventBus
+import io.github.skriptinsight.redux.file.analysis.event.SkriptFileInspectionResultsEvent
 import io.github.skriptinsight.redux.file.node.AbstractSkriptNode
 import io.github.skriptinsight.redux.file.node.impl.EmptySkriptNode
 import io.github.skriptinsight.redux.file.node.impl.skript.function.FunctionSectionSkriptNode
+import io.github.skriptinsight.redux.lsp.extensions.toLspDiagnostic
 import io.github.skriptinsight.redux.lsp.extensions.toLspRange
 import io.github.skriptinsight.redux.lsp.workspace.LspSkriptWorkspace
 import io.github.skriptinsight.redux.lsp.workspace.WorkspaceActionHandler
@@ -75,6 +78,19 @@ class SkriptTextDocumentService(override var coroutineContext: CoroutineContext,
     }
 
     suspend fun onClientInitialized(client: LanguageClient) {
+        registerInspectionResultsHandler()
+    }
 
+    private fun registerInspectionResultsHandler() {
+        EventBus.register<SkriptFileInspectionResultsEvent> {
+            client.publishDiagnostics(
+                PublishDiagnosticsParams(
+                    it.file.url.toString(),
+                    it.diagnostics.map { diagnostic ->
+                        diagnostic.toLspDiagnostic()
+                    }
+                )
+            )
+        }
     }
 }

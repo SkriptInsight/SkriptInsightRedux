@@ -16,8 +16,13 @@ open class SkriptWorkspace : BaseWorkspace() {
         FunctionSectionParser
     )
 
-    override fun <R> runProcess(skriptFile: SkriptFile, process: SkriptFileProcess<R>): List<R> {
-        val map = skriptFile.nodes.map {
+    override fun <R> runProcess(
+        skriptFile: SkriptFile,
+        process: SkriptFileProcess<R>,
+        startIndex: Int,
+        endIndex: Int
+    ): List<R> {
+        val map = skriptFile.nodes.filterKeys { it in startIndex..endIndex }.map {
             FileProcessCallable(process, skriptFile, it.key, it.value.rawContent, it.value)
         }
         return ForkJoinPool.commonPool().invokeAll(map).map { it.get() }
